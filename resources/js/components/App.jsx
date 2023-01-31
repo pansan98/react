@@ -4,7 +4,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 
 import Home from './pages/Home';
 import Contact from './pages/Contact';
-import StopWatch from './pages/StopWatch';
+import StopWatch from './pages/practice/StopWatch';
 
 const App = () => {
 	return (
@@ -13,7 +13,7 @@ const App = () => {
 				<Routes>
 					<Route path="/" exact element={<Home />} />
 					<Route path="/contact" element={<Contact />} />
-					<Route path="/stop-watch" element={<StopWatch />} />
+					<Route path="/practice/stop-watch" element={<StopWatch />} />
 				</Routes>
 			</React.Fragment>
 		</BrowserRouter>

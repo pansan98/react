@@ -1,6 +1,6 @@
 import React from 'react';
 
-import GlobalNav from '../common/GlobalNav';
+import GlobalNav from '../../common/GlobalNav';
 
 const StopWatch = () => {
 	return (

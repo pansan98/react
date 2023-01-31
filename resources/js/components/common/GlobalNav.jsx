@@ -12,7 +12,7 @@ const GlobalNav = () => {
 					<Link to="/contact">Contact</Link>
 				</li>
 				<li className="nav-item d-none d-sm-inline-block">
-					<Link to="/stop-watch">StopWatch</Link>
+					<Link to="/practice/stop-watch">StopWatch</Link>
 				</li>
 			</ul>
 		</nav>
