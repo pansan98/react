@@ -17,3 +17,10 @@ use Illuminate\Support\Facades\Route;
 Route::middleware('auth:sanctum')->get('/user', function (Request $request) {
     return $request->user();
 });
+
+Route::prefix('ps')->as('ps')->group(function() {
+    Route::prefix('stop-watch')->as('stop_watch')->group(function() {
+        Route::get('/', [\App\Http\Controllers\Api\PS\StopWatchController::class, 'index']);
+        Route::post('/save', [\App\Http\Controllers\Api\PS\StopWatchController::class, 'save']);
+    });
+});

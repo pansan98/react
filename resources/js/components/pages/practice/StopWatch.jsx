@@ -1,4 +1,5 @@
 import React, {Component} from 'react';
+import axios from 'axios';
 
 import GlobalNav from '../../common/GlobalNav';
 
@@ -9,7 +10,8 @@ class StopWatch extends Component {
 			is_live: false,
 			current_time: 0,
 			start_time: 0,
-			laps: []
+			laps: [],
+			storage_laps: []
 		}
 		this.timer = 0;
 		this.laps = [];
@@ -64,6 +66,47 @@ class StopWatch extends Component {
 				laps: this.laps
 			})
 		}
+	}
+
+	c_save(e) {
+		if(this.state.is_live) {
+			window.alert('まず止めて');
+			return;
+		}
+
+		axios.post('/api/ps/stop-watch/save', {
+			total_time: this.state.current_time,
+			name: 'APIテスト',
+			laps: this.state.laps
+		}).then((res) => {
+			if(res.data.result) {
+				window.alert('保存成功');
+			} else {
+				window.alert('保存失敗');
+			}
+		}).catch((e) => {
+			console.log(e.message);
+		});
+	}
+
+	fetch_laps()
+	{
+		axios.get('/api/ps/stop-watch').then((res) => {
+			if(res.data) {
+				const laps = [];
+				for(let k in res.data) {
+					laps.push({
+						number: res.data[k].lap_number,
+						time: res.data[k].lap_time
+					});
+				}
+				this.setState({
+					storage_laps: laps
+				});
+			}
+		}).catch((e) => {
+			console.log(e.message);
+		})
 	}
 
 	get_laps() {
@@ -124,7 +167,7 @@ class StopWatch extends Component {
 					<div>{this.time_display()}</div>
 					<button onClick={(e) => {this.c_handler(e)}}>{label}</button>
 					<button onClick={(e) => {this.c_lap(e)}}>Lap</button>
-					<button>Laps for save</button>
+					<button onClick={(e) => {this.c_save(e)}}>Laps for save</button>
 				</div>
 				{this.get_laps()}
 			</div>
