@@ -22,5 +22,6 @@ Route::prefix('ps')->as('ps')->group(function() {
     Route::prefix('stop-watch')->as('stop_watch')->group(function() {
         Route::get('/', [\App\Http\Controllers\Api\PS\StopWatchController::class, 'index']);
         Route::post('/save', [\App\Http\Controllers\Api\PS\StopWatchController::class, 'save']);
+        Route::post('/destroy/{id}', [\App\Http\Controllers\Api\PS\StopWatchController::class, 'destroy'])->where(['id' => '[0-9]+']);
     });
 });

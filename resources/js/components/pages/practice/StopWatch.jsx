@@ -22,6 +22,7 @@ class StopWatch extends Component {
 		this.timer = setInterval((e) => {
 			this.tick();
 		}, 1000);
+		this.fetch_laps();
 	}
 
 	// アンマウントした時
@@ -80,6 +81,7 @@ class StopWatch extends Component {
 			laps: this.state.laps
 		}).then((res) => {
 			if(res.data.result) {
+				this.fetch_laps();
 				window.alert('保存成功');
 			} else {
 				window.alert('保存失敗');
@@ -93,19 +95,27 @@ class StopWatch extends Component {
 	{
 		axios.get('/api/ps/stop-watch').then((res) => {
 			if(res.data) {
-				const laps = [];
-				for(let k in res.data) {
-					laps.push({
-						number: res.data[k].lap_number,
-						time: res.data[k].lap_time
-					});
-				}
+				const laps = res.data;
 				this.setState({
 					storage_laps: laps
 				});
 			}
 		}).catch((e) => {
 			console.log(e.message);
+		})
+	}
+
+	// ラップの削除
+	delete_lap(e) {
+		const current = e.currentTarget;
+		const lap_id = current.getAttribute('data');
+		axios.post('/api/ps/stop-watch/destroy/' + lap_id).then((res) => {
+			if(res.data.result) {
+				this.fetch_laps();
+				window.alert('削除OK');
+			} else {
+				window.alert('削除失敗');
+			}
 		})
 	}
 
@@ -153,6 +163,36 @@ class StopWatch extends Component {
 		)
 	}
 
+	// 保存済みのラップ表示
+	laps_display() {
+		if(!this.state.storage_laps.length) return;
+
+		return (<div className="storage-stopwatch-laps">
+			<p>保存済みのラップ</p>
+			<div className="stopwatch-lap-box">
+				{
+					this.state.storage_laps.map((v, i) => {
+						const box_k = 'box-' + v.id;
+						const d_k = 'delete-' + v.id;
+						return (
+							<div key={box_k} className="laps">
+								<p key={i}>{v.name}</p>
+								{
+									this.state.storage_laps[i].laps.map((c_v, c_i) => {
+										return (
+											<li key={c_i}>Lap:{c_v.lap_number}、Time:{c_v.lap_time}</li>
+										)
+									})
+								}
+								<button key={d_k} onClick={(e) => {this.delete_lap(e)}} data={v.id}>消す</button>
+							</div>
+						)
+					})
+				}
+			</div>
+		</div>)
+	}
+
 	render() {
 		let label = 'Start';
 		if(this.state.is_live) {
@@ -170,6 +210,9 @@ class StopWatch extends Component {
 					<button onClick={(e) => {this.c_save(e)}}>Laps for save</button>
 				</div>
 				{this.get_laps()}
+				<div>
+					{this.laps_display()}
+				</div>
 			</div>
 		)
 	}

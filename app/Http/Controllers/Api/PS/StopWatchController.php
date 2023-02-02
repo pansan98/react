@@ -7,12 +7,14 @@ use Illuminate\Http\Request;
 use Illuminate\Support\Facades\DB;
 use App\Models\PS\StopWatch;
 use App\Models\PS\StopWatchLap;
+use Throwable;
 
 class StopWatchController extends Controller
 {
 	public function index(Request $request)
 	{
-		return response()->json([]);
+		$stop_watches = StopWatch::with(['laps'])->get()->toArray();
+		return response()->json($stop_watches);
 	}
 
 	public function save(Request $request)
@@ -22,7 +24,7 @@ class StopWatchController extends Controller
 		];
 		$params = $request->request->all();
 		if(!empty($params)) {
-			DB::transaction(function() use ($params) {
+			$res['result'] = DB::transaction(function() use ($params) {
 				$stop_watch = new StopWatch();
 				$stop_watch->fill($params)->save();
 				if(!empty($params['laps'])) {
@@ -36,8 +38,25 @@ class StopWatchController extends Controller
 					}
 				}
 
-				$res['result'] = true;
+				return true;
 			});
+		}
+
+		return response()->json($res);
+	}
+
+	public function destroy(Request $request, $id)
+	{
+		$res = ['result' => false];
+		try {
+			$res['result'] = DB::transaction(function() use ($id) {
+				$stop_watch = StopWatch::where('id', $id)->first();
+				if($stop_watch) {
+					$stop_watch->delete();
+				}
+				return true;
+			});
+		} catch(Throwable $e) {
 		}
 
 		return response()->json($res);
