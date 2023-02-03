@@ -2,22 +2,35 @@ import React from 'react';
 import ReactDOM from 'react-dom';
 import {BrowserRouter, Route, Routes} from 'react-router-dom';
 
+// Pages
 import Home from './pages/Home';
 import Contact from './pages/Contact';
 import StopWatch from './pages/practice/StopWatch';
 
-const App = () => {
-	return (
-		<BrowserRouter>
-			<React.Fragment>
-				<Routes>
-					<Route path="/" exact element={<Home />} />
-					<Route path="/contact" element={<Contact />} />
-					<Route path="/practice/stop-watch" element={<StopWatch />} />
-				</Routes>
-			</React.Fragment>
-		</BrowserRouter>
-	);
+// Auth
+import Login from './auth/Login';
+import Auth from './plugins/Auth';
+// TODO リダイレクト処理研究中
+
+class App extends React.Component {
+	constructor(props) {
+		super(props);
+	}
+
+	render() {
+		return (
+			<BrowserRouter>
+				<React.Fragment>
+					<Routes>
+						<Route path="/" exact element={<Home />} />
+						<Route path="/contact" element={<Contact />} />
+						<Route path="/practice/stop-watch" element={<StopWatch />} />
+						<Route path="/auth/login" element={<Login />} />
+					</Routes>
+				</React.Fragment>
+			</BrowserRouter>
+		)
+	}
 }
 
 export default App;

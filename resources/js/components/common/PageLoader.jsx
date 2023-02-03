@@ -1,6 +1,6 @@
-import React, {Component} from 'react';
+import React from 'react';
 
-class PageLoader extends Component {
+class PageLoader extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
@@ -11,7 +11,7 @@ class PageLoader extends Component {
 	componentDidMount() {
 		setTimeout((e) => {
 			this.done();
-		}, 250);
+		}, 200);
 	}
 
 	done()
