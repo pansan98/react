@@ -2,6 +2,7 @@ import React, {Component} from 'react';
 import axios from 'axios';
 
 import GlobalNav from '../../common/GlobalNav';
+import PageLoader from '../../common/PageLoader';
 
 class StopWatch extends Component {
 	constructor(props) {
@@ -72,6 +73,10 @@ class StopWatch extends Component {
 	c_save(e) {
 		if(this.state.is_live) {
 			window.alert('まず止めて');
+			return;
+		}
+		if(!this.state.laps.length) {
+			window.alert('ラップがない');
 			return;
 		}
 
@@ -202,6 +207,7 @@ class StopWatch extends Component {
 		return (
 			<div className="wrapper">
 				<h1>StopWatch Page</h1>
+				<PageLoader />
 				<GlobalNav />
 				<div className="stopwatch-wrapper">
 					<div>{this.time_display()}</div>
