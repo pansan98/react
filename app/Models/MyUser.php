@@ -4,10 +4,11 @@ namespace App\Models;
 
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
+use App\Models\Traits\Common;
 
 class MyUser extends Model
 {
-    use HasFactory;
+    use HasFactory, Common;
 
     protected $table = 'my_users';
     protected $fillable = ['login_id', 'password', 'name', 'email', 'identify_code', 'active_flag', 'delete_flag'];

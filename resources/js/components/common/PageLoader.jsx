@@ -6,9 +6,11 @@ class PageLoader extends React.Component {
 		this.state = {
 			loaded: false
 		}
+		this.loader;
 	}
 
 	componentDidMount() {
+		this.loader = document.getElementById('page-loader');
 		setTimeout((e) => {
 			this.done();
 		}, 200);
@@ -16,9 +18,8 @@ class PageLoader extends React.Component {
 
 	done()
 	{
-		const loader = document.getElementById('page-loader');
-		if(loader) {
-			loader.style.display = 'none';
+		if(this.loader) {
+			this.loader.style.display = 'none';
 		}
 	}
 
