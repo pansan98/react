@@ -3,6 +3,7 @@
 namespace App\Http\Controllers\Api;
 
 use Illuminate\Http\Request;
+use App\Http\Requests\AuthRegisterRequest;
 use App\Http\Controllers\Controller;
 use App\Providers\MyAuthServiceProvider;
 
@@ -18,11 +19,12 @@ class MyAuthController extends Controller
 
     public function login(Request $request)
     {
-        
+
     }
 
-    public function register(Request $request)
+    public function register(AuthRegisterRequest $request)
     {
-
+        $params = $request->request->all();
+        
     }
 }

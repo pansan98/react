@@ -6,11 +6,16 @@ class Text extends React.Component {
 	}
 
 	render() {
-
 		return (
 			<div className="form-group">
 				<label>{this.props.label}</label>
-				<input type="text" className="form-control" name="text" value={this.props.value}/>
+				<input
+					type={this.props.type}
+					className="form-control"
+					name={this.props.formName}
+					value={this.props.value}
+					onChange={(e) => this.props.onChange(this.props.formName, e.currentTarget.value)}
+				/>
 			</div>
 		)
 	}

@@ -9,6 +9,7 @@ import StopWatch from './pages/practice/StopWatch';
 
 // Auth
 import Login from './auth/Login';
+import Register from './auth/Register';
 
 class App extends React.Component {
 	constructor(props) {
@@ -24,6 +25,7 @@ class App extends React.Component {
 						<Route path="/contact" element={<Contact />} />
 						<Route path="/practice/stop-watch" element={<StopWatch />} />
 						<Route path="/auth/login" element={<Login />} />
+						<Route path="/auth/register" element={<Register />} />
 					</Routes>
 				</React.Fragment>
 			</BrowserRouter>
