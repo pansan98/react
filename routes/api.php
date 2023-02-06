@@ -25,3 +25,8 @@ Route::prefix('ps')->as('ps')->group(function() {
         Route::post('/destroy/{id}', [\App\Http\Controllers\Api\PS\StopWatchController::class, 'destroy'])->where(['id' => '[0-9]+']);
     });
 });
+
+Route::prefix('auth')->as('auth')->group(function() {
+    Route::post('/login', [\App\Http\Controllers\Api\MyAuthController::class, 'login']);
+    Route::post('/register', [\App\Http\Controllers\Api\MyAuthController::class, 'register']);
+});

@@ -9,8 +9,6 @@ import StopWatch from './pages/practice/StopWatch';
 
 // Auth
 import Login from './auth/Login';
-import Auth from './plugins/Auth';
-// TODO リダイレクト処理研究中
 
 class App extends React.Component {
 	constructor(props) {

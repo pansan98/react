@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 
 class Text extends React.Component {
 	constructor(props) {
@@ -6,10 +6,11 @@ class Text extends React.Component {
 	}
 
 	render() {
+
 		return (
 			<div className="form-group">
-				<label>テキスト</label>
-				<input type="text" className="form-control" name="text"/>
+				<label>{this.props.label}</label>
+				<input type="text" className="form-control" name="text" value={this.props.value}/>
 			</div>
 		)
 	}

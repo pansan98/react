@@ -1,4 +1,4 @@
-import React from 'react';
+import React, {useState} from 'react';
 import Auth from '../plugins/Auth';
 
 import PageLoader from '../common/PageLoader';
@@ -17,8 +17,8 @@ class Login extends React.Component {
 					<div className="card-body">
 						<p className="login-box-msg">Sign in to start sessions</p>
 						<form>
-							<Text />
-							<Text />
+							<Text formName="login_id" label="ID" value=""/>
+							<Text formName="password" label="Password" value=""/>
 							<div className="col-4">
 								<button type="submit" className="btn btn-primary btn-block">Sign in</button>
 							</div>
