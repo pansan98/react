@@ -57,15 +57,18 @@ class StopWatchController extends Controller
 	public function destroy(Request $request, $id)
 	{
 		$res = ['result' => false];
-		try {
-			$res['result'] = DB::transaction(function() use ($id) {
-				$stop_watch = StopWatch::where('id', $id)->first();
-				if($stop_watch) {
-					$stop_watch->delete();
-				}
-				return true;
-			});
-		} catch(Throwable $e) {
+		$user = $this->myauth_provider->get();
+		if(!empty($user)) {
+			try {
+				$res['result'] = DB::transaction(function() use ($id, $user) {
+					$stop_watch = StopWatch::where('id', $id)->where('user_id', $user->id)->first();
+					if($stop_watch) {
+						$stop_watch->delete();
+					}
+					return true;
+				});
+			} catch(Throwable $e) {
+			}
 		}
 
 		return response()->json($res);

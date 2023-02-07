@@ -3,6 +3,7 @@ import axios from 'axios';
 
 import GlobalNav from '../../common/GlobalNav';
 import PageLoader from '../../common/PageLoader';
+import SideMenu from '../../common/SideMenu';
 
 class StopWatch extends Component {
 	constructor(props) {
@@ -208,18 +209,33 @@ class StopWatch extends Component {
 
 		return (
 			<div className="wrapper">
-				<h1>StopWatch Page</h1>
 				<PageLoader />
 				<GlobalNav />
-				<div className="stopwatch-wrapper">
-					<div>{this.time_display()}</div>
-					<button onClick={(e) => {this.c_handler(e)}}>{label}</button>
-					<button onClick={(e) => {this.c_lap(e)}}>Lap</button>
-					<button onClick={(e) => {this.c_save(e)}}>Laps for save</button>
-				</div>
-				{this.get_laps()}
-				<div>
-					{this.laps_display()}
+				<SideMenu />
+				<div className="content-wrapper">
+					<div className="content-header">
+						<div className="container-fluid">
+							<div className="row mb-2">
+								<div className="col-sm-6">
+									StopWatch Page
+								</div>
+							</div>
+						</div>
+					</div>
+					<section className="content">
+						<div className="container-fluid">
+							<div className="stopwatch-wrapper">
+								<div>{this.time_display()}</div>
+								<button onClick={(e) => {this.c_handler(e)}}>{label}</button>
+								<button onClick={(e) => {this.c_lap(e)}}>Lap</button>
+								<button onClick={(e) => {this.c_save(e)}}>Laps for save</button>
+							</div>
+							{this.get_laps()}
+							<div>
+								{this.laps_display()}
+							</div>
+						</div>
+					</section>
 				</div>
 			</div>
 		)

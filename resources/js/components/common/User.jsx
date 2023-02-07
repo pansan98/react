@@ -12,7 +12,11 @@ class User extends React.Component {
 
 	componentWillMount()
 	{
-		this.fetch();
+		if(!this.props.user) {
+			this.fetch();
+		} else {
+			this.setState({user: this.props.user});
+		}
 	}
 
 	async fetch()
@@ -28,11 +32,28 @@ class User extends React.Component {
 		})
 	}
 
+	display()
+	{
+		if(this.props.type === 'side-menu') {
+			return (
+				<div className="user-panel mt-3 pb-3 mb-3 d-flex">
+					<div className="info">
+						{this.state.user.name}
+					</div>
+				</div>
+			)
+		} else {
+			return (
+				<div className="user-profile">
+					<p className="username text-center">ようこそ、{this.state.user.name}さん</p>
+				</div>
+			)
+		}
+	}
+
 	render() {
 		return (
-			<div className="user-profile">
-				<p className="username text-center">ようこそ、{this.state.user.name}さん</p>
-			</div>
+			<div>{this.display()}</div>
 		)
 	}
 }
