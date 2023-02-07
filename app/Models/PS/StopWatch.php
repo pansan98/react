@@ -11,7 +11,7 @@ class StopWatch extends Model
 	use HasFactory;
 
 	protected $table = 'practice_stopwatch_lap';
-	protected $fillable = ['name', 'total_time'];
+	protected $fillable = ['user_id', 'name', 'total_time'];
 	protected $hidden = [];
 
 	/**

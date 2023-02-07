@@ -13,8 +13,15 @@ class StopWatchController extends Controller
 {
 	public function index(Request $request)
 	{
-		$stop_watches = StopWatch::with(['laps'])->get()->toArray();
-		return response()->json($stop_watches);
+		$user = $this->myauth_provider->get();
+		if(!empty($user)) {
+			$stop_watches = StopWatch::with(['laps'])->where('user_id', $user->id)->get()->toArray();
+			return $this->success([
+				'laps' => $stop_watches
+			]);
+		}
+
+		return $this->failed(['laps' => []]);
 	}
 
 	public function save(Request $request)
@@ -23,7 +30,9 @@ class StopWatchController extends Controller
 			'result' => false
 		];
 		$params = $request->request->all();
-		if(!empty($params)) {
+		$user = $this->myauth_provider->get();
+		if(!empty($params) && !empty($user)) {
+			$params['user_id'] = $user->id;
 			$res['result'] = DB::transaction(function() use ($params) {
 				$stop_watch = new StopWatch();
 				$stop_watch->fill($params)->save();

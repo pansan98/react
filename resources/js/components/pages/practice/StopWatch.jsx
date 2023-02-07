@@ -98,9 +98,11 @@ class StopWatch extends Component {
 
 	fetch_laps()
 	{
-		axios.get('/api/ps/stop-watch').then((res) => {
-			if(res.data) {
-				const laps = res.data;
+		axios.get('/api/ps/stop-watch', {
+			credentials: 'same-origin'
+		}).then((res) => {
+			if(res.data.laps) {
+				const laps = res.data.laps;
 				this.setState({
 					storage_laps: laps
 				});
