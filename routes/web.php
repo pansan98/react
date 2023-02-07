@@ -13,9 +13,9 @@ use Illuminate\Support\Facades\Route;
 |
 */
 
-Route::get('/auth/{any}', [\App\Http\Controllers\MyAuthController::class, 'index'])->where('any', '.*');
+Route::get('/auth/{any}', [\App\Http\Controllers\MyAuthController::class, 'index'])->where('any', '.*')->middleware('my.member');
 
-Route::get('/{any}', [\App\Http\Controllers\IndexController::class, 'index'])->where('any', '.*');
+Route::get('/{any}', [\App\Http\Controllers\IndexController::class, 'index'])->where('any', '.*')->middleware('my.auth');
 
 // Route::get('/', function () {
 // 	return view('welcome');

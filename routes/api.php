@@ -29,4 +29,5 @@ Route::prefix('ps')->as('ps')->group(function() {
 Route::prefix('auth')->as('auth')->group(function() {
     Route::post('/login', [\App\Http\Controllers\Api\MyAuthController::class, 'login']);
     Route::post('/register', [\App\Http\Controllers\Api\MyAuthController::class, 'register']);
+    Route::get('/user', [\App\Http\Controllers\Api\MyAuthController::class, 'user']);
 });

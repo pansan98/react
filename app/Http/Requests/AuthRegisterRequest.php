@@ -2,24 +2,13 @@
 
 namespace App\Http\Requests;
 
-use Illuminate\Foundation\Http\FormRequest;
+use App\Http\Requests\MyRequest;
 use App\Models\MyUser;
 use Illuminate\Contracts\Validation\Validator;
 use Illuminate\Validation\Rule;
-use Illuminate\Http\Exceptions\HttpResponseException;
 
-class AuthRegisterRequest extends FormRequest
+class AuthRegisterRequest extends MyRequest
 {
-	/**
-	 * Determine if the user is authorized to make this request.
-	 *
-	 * @return bool
-	 */
-	public function authorize()
-	{
-		return true;
-	}
-
 	/**
 	 * Get the validation rules that apply to the request.
 	 *
@@ -58,14 +47,5 @@ class AuthRegisterRequest extends FormRequest
 				$validator->errors()->add('login_id', 'すでに利用されているログインIDです。');
 			}
 		});
-	}
-
-	protected function failedValidation(Validator $validator)
-	{
-		$res = response()->json([
-			'status' => 400,
-			'errors' => $validator->errors()
-		], 400);
-		throw new HttpResponseException($res);
 	}
 }

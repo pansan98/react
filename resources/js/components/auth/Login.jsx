@@ -4,14 +4,20 @@ import Auth from '../plugins/Auth';
 
 import PageLoader from '../common/PageLoader';
 import Text from '../forms/Text';
-
+import Error from '../forms/Error';
 
 class Login extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			login_id: '',
-			password: ''
+			password: '',
+			errors: {
+				login_id: [],
+				password: [],
+				login_error: []
+			},
+			login: false
 		}
 	}
 
@@ -22,10 +28,72 @@ class Login extends React.Component {
 		this.setState(param);
 	}
 
-	onSubmit(e)
+	async onLogin(e)
 	{
 		e.preventDefault();
-		console.log(this.state);
+		await axios.post('/api/auth/login', {
+			login_id: this.state.login_id,
+			password: this.state.password,
+			credentials: 'same-origin'
+		}).then((res) => {
+			if(res.data.result) {
+				this.setState({login: true});
+			}
+			return;
+		}).catch((e) => {
+			if(e.response.status === 400) {
+				this.setState({errors: e.response.data.errors});
+			}
+		})
+	}
+
+	login_display()
+	{
+		if(!this.state.login) {
+			return (
+				<div className="card-body">
+					<Error
+						error={this.state.errors.login_error}
+					/>
+					<p className="login-box-msg">Sign in to start sessions</p>
+					<Text
+						formName="login_id"
+						type="text"
+						label="Login ID"
+						value={this.state.login_id}
+						onChange={(name, value) => this.handlerChange(name, value)}
+					/>
+					<Error
+						error={this.state.errors.login_id}
+					/>
+					<Text
+						formName="password"
+						type="password"
+						label="Password"
+						value={this.state.password}
+						onChange={(name, value) => this.handlerChange(name, value)}
+					/>
+					<Error
+						error={this.state.errors.password}
+					/>
+					<div className="col-4">
+						<button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.onLogin(e)}>Sign in</button>
+					</div>
+					<p className="mb-0">
+						<Link className="text-center" to="/auth/register">Register</Link>
+					</p>
+				</div>
+			)
+		} else {
+			return (
+				<div className="card-body">
+					<p className="text-center">ログインしました。</p>
+					<p className="mb-0">
+						<Link className="text-center" to="/">Home</Link>
+					</p>
+				</div>
+			)
+		}
 	}
 
 	render() {
@@ -33,31 +101,7 @@ class Login extends React.Component {
 			<div className="login-box">
 				<PageLoader />
 				<div className="card">
-					<div className="card-body">
-						<p className="login-box-msg">Sign in to start sessions</p>
-						<form>
-							<Text
-								formName="login_id"
-								type="text"
-								label="Login ID"
-								value={this.state.login_id}
-								onChange={(name, value) => this.handlerChange(name, value)}
-							/>
-							<Text
-								formName="password"
-								type="password"
-								label="Password"
-								value={this.state.password}
-								onChange={(name, value) => this.handlerChange(name, value)}
-							/>
-							<div className="col-4">
-								<button type="submit" className="btn btn-primary btn-block" onSubmit={(e) => this.onSubmit(e)}>Sign in</button>
-							</div>
-						</form>
-						<p className="mb-0">
-							<Link className="text-center" to="/auth/register">Register</Link>
-						</p>
-					</div>
+					{this.login_display()}
 				</div>
 			</div>
 		)
