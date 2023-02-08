@@ -1,4 +1,5 @@
 import React from 'react';
+import axios from 'axios';
 import {Link} from 'react-router-dom';
 
 import Base from '../Base';
@@ -66,6 +67,21 @@ class Profile extends React.Component {
 		this.setState(param);
 	}
 
+	async save(e) {
+		await axios.post('/api/auth/profile', {
+			name: this.state.f_name,
+			email: this.state.f_email,
+			profession: this.state.f_profession,
+			credentials: 'same-origin'
+		}).then((res) => {
+			if(res.data.result) {
+				window.alert('更新しました。');
+			}
+		}).catch((e) => {
+			console.log(e);
+		})
+	}
+
 	contents() {
 		return (
 			<div className="row">
@@ -124,6 +140,7 @@ class Profile extends React.Component {
 									<Uploader />
 									<Error error={this.state.errors.thumbnail}/>
 								</div>
+								<button className="btn btn-primary" onClick={(e) => this.save(e)}>保存</button>
 							</div>
 						</div>
 					</div>

@@ -22,7 +22,7 @@ class FileUploader {
 		// アップロードファイルをスタックする
 		this.files = [];
 		this.config = deepmerge(d_config, config);
-		this.build();
+		//this.build();
 	}
 
 	build()

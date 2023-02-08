@@ -12,8 +12,8 @@ class SideMenu extends React.Component {
     render() {
         return (
             <aside className="main-sidebar sidebar-dark-primary elevation-4">
-                <Link to="/" className="bland-link">
-                    <span className="brand-text fonr-weight-light">Home</span>
+                <Link to="/" className="brand-link">
+                    <span className="brand-text font-weight-light">Home</span>
                 </Link>
                 <div className="sidebar os-host os-theme-light os-host-overflow os-host-overflow-y os-host-resize-disabled os-host-scrollbar-horizontal-hidden os-host-transition">
                     <div className="os-resize-observer-host observed">
