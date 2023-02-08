@@ -5,6 +5,7 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Requests\AuthRegisterRequest;
 use App\Http\Requests\AuthLoginRequest;
+use App\Http\Requests\AuthProfileRequest;
 use App\Http\Controllers\Controller;
 use App\Models\MyUser;
 use Illuminate\Support\Facades\DB;
@@ -55,10 +56,27 @@ class MyAuthController extends Controller
 			$data['result'] = true;
 			$data['user'] = [
 				'name' => $user->name,
-				'email' => !empty($user->email) ? $user->email : ''
+				'email' => $user->email,
+				'profession' => $user->profession,
+				'gender' => $user->gender
 			];
 		}
 
 		return response()->json($data);
+	}
+
+	public function profile(AuthProfileRequest $request)
+	{
+		$params = $request->request->all();
+		$user = $this->myauth_provider->get();
+		if(!empty($user)) {
+			$result = DB::transaction(function() use ($user, $params) {
+				$user->fill($params)->save();
+				return true;
+			});
+			return $this->success();
+		}
+
+		return $this->failed();
 	}
 }

@@ -8,10 +8,10 @@ const GlobalNav = () => {
 				<li className="nav-item d-none d-sm-inline-block">
 					<Link to="/">Home</Link>
 				</li>
-				<li className="nav-item d-none d-sm-inline-block">
+				<li className="ml-2 nav-item d-none d-sm-inline-block">
 					<Link to="/contact">Contact</Link>
 				</li>
-				<li className="nav-item d-none d-sm-inline-block">
+				<li className="ml-2 nav-item d-none d-sm-inline-block">
 					<Link to="/practice/stop-watch">StopWatch</Link>
 				</li>
 			</ul>

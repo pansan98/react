@@ -15,6 +15,8 @@ class Profile extends React.Component {
 			user: {},
 			f_name: '',
 			f_email: '',
+			f_profession: '',
+			f_gender: 0,
 			errors: {
 				name: [],
 				email: [],
@@ -31,7 +33,9 @@ class Profile extends React.Component {
 			this.setState({
 				user: this.props.user,
 				f_name: this.props.user.name,
-				f_email: this.props.user.email
+				f_email: this.props.user.email,
+				f_profession: this.props.user.profession,
+				f_gender: this.props.user.gender
 			});
 		}
 	}
@@ -45,7 +49,9 @@ class Profile extends React.Component {
 				this.setState({
 					user: res.data.user,
 					f_name: res.data.user.name,
-					f_email: res.data.user.email
+					f_email: res.data.user.email,
+					f_profession: res.data.user.profession,
+					f_gender: res.data.user.gender
 				})
 			}
 		}).catch((e) => {
@@ -72,8 +78,8 @@ class Profile extends React.Component {
 									<button className="btn btn-danger">Clear</button>
 								</div>
 							</div>
-							<h3>{this.state.user.name}</h3>
-							<p className="text-muted text-center">職業</p>
+							<h3>{this.state.f_name}</h3>
+							<p className="text-muted text-center">{this.state.f_profession}</p>
 						</div>
 					</div>
 				</div>
@@ -101,12 +107,19 @@ class Profile extends React.Component {
 									<Text
 										label="Email"
 										formName="f_email"
-										value={this.state.f_email}
+										value={(this.state.f_email) ? this.state.f_email : ''}
 										type="email"
 										onChange={(name, value) => this.handlerChange(name, value)}
 									/>
 									<Error
 										error={this.state.errors.email}
+									/>
+									<Text
+										label="職業"
+										formName="f_profession"
+										value={(this.state.f_profession) ? this.state.f_profession : ''}
+										type="text"
+										onChange={(name, value) => this.handlerChange(name, value)}
 									/>
 									<Uploader />
 									<Error error={this.state.errors.thumbnail}/>

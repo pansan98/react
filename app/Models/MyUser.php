@@ -10,17 +10,33 @@ use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MyUser extends Model
 {
-    use HasFactory, Common;
+	use HasFactory, Common;
 
-    protected $table = 'my_users';
-    protected $fillable = ['login_id', 'password', 'name', 'email', 'identify_code', 'active_flag', 'delete_flag'];
-    protected $hidden = ['login_id', 'password', 'delete_flag'];
+	const GENDER = [
+		1 => '男性',
+		2 => '女性',
+		3 => 'カスタム'
+	];
 
-    /**
-     * @return HasMany
-     */
-    public function laps()
-    {
-        return $this->hasMany(\App\Models\PS\StopWatch::class, 'user_id', 'id');
-    }
+	protected $table = 'my_users';
+	protected $fillable = ['login_id', 'password', 'name', 'email', 'profession', 'gender', 'identify_code', 'active_flag', 'delete_flag'];
+	protected $hidden = ['login_id', 'password', 'delete_flag'];
+
+	/**
+	 * @return HasMany
+	 */
+	public function laps()
+	{
+		return $this->hasMany(\App\Models\PS\StopWatch::class, 'user_id', 'id');
+	}
+
+	public function gender_label()
+	{
+		$gender = '';
+		if(isset(self::GENDER[$this->gender])) {
+			$gender = self::GENDER[$this->gender];
+		}
+
+		return $gender;
+	}
 }

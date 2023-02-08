@@ -38,6 +38,9 @@ class User extends React.Component {
 		if(this.props.type === 'side-menu') {
 			return (
 				<div className="user-panel mt-3 pb-3 mb-3 d-flex">
+					<div className="image">
+						<img src="/assets/img/no-image.jpg" className="img-circle elevation-2"/>
+					</div>
 					<div className="info">
 						<Link to="/my/profile" className="d-block">{this.state.user.name}</Link>
 					</div>
@@ -57,6 +60,11 @@ class User extends React.Component {
 			<div>{this.contents()}</div>
 		)
 	}
+}
+
+User.defaultProps = {
+	type: 'default',
+	user: null
 }
 
 export default User;
