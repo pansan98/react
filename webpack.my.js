@@ -9,24 +9,44 @@ let entries = {};
 glob.sync('./resources/js/*.js').map((file) => {
 	const pattern = new RegExp('./resources/js');
 	const f_name = path.dirname(file).replace(pattern, 'js') + '/' + path.basename(file, '.js');
-	entries[f_name] = file;
+	entries[f_name] = {
+		type: 'js',
+		file: file
+	};
 })
 
 // SCSS
-glob.sync('./resources/scss/*.scss', {
+glob.sync('./resources/sass/*.scss', {
 	ignore: [
-		'./resouces/scss/_*.scss',
-		'./resources/scss/ignore/*'
+		'./resources/sass/_*.scss',
+		'./resources/sass/ignore/*'
 	]
 }).map((file) => {
-	const pattern = new RegExp('./resources/scss');
+	const pattern = new RegExp('./resources/sass');
 	const f_name = path.dirname(file).replace(pattern, 'css') + '/' + path.basename(file).replace(new RegExp('.scss'), '');
-	entries[f_name] = file;
+	entries[f_name] = {
+		type: 'css',
+		file: file
+	};
+})
+
+// SCSS underlayer
+glob.sync('./resources/sass/*/*.scss').map((file) => {
+	const pattern = new RegExp('./resources/sass');
+	const f_name = path.dirname(file).replace(pattern, 'css') + '/' + path.basename(file).replace(new RegExp('.scss'), '');
+	entries[f_name] = {
+		type: 'css',
+		file: file
+	};
 })
 
 let bundles = {};
 for(let k in entries) {
-	bundles[k + '.bundle'] = entries[k];
+	if(entries[k].type === 'js') {
+		bundles[k + '.bundle'] = entries[k].file;
+	} else {
+		bundles[k] = entries[k].file;
+	}
 }
 
 module.exports = {
@@ -37,7 +57,7 @@ module.exports = {
 		path: path.resolve(__dirname, './public/assets')
 	},
 	resolve: {
-		extensions: ['*', '.js', '.jsx']
+		extensions: ['*', '.js', '.jsx', '.scss']
 	},
 	module: {
 		rules: [
@@ -53,18 +73,20 @@ module.exports = {
 			},
 			{
 				test: /\.scss$/,
+				exclude: /node_modules/,
 				use: [
 					{
 						loader: MiniCssExtractPlugin.loader,
 						options: {
-							minimize: true
+							//minimize: true
 						}
 					},
 					{
 						loader: 'css-loader',
 						options: {
 							sourceMap: true,
-							url: false
+							url: false,
+							modules: true
 						}
 					},
 					{
@@ -77,9 +99,9 @@ module.exports = {
 						loader: 'sass-loader',
 						options: {
 							sourceMap: true,
-							webpackImport: false,
+							//webpackImport: false,
 							sassOptions: {
-								includePaths: ['./node_modules', './resources/scss']
+								includePaths: ['./node_modules']
 							},
 							implementation: require('sass')
 						}

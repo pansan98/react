@@ -1,0 +1,18 @@
+.hKv7AqiHpw2j4HIHQE3g .dropzone {
+  height: 200px;
+  background-color: #f4f6f9;
+}
+.hKv7AqiHpw2j4HIHQE3g .dropzone.dragover {
+  background-color: #6c757d;
+}
+.hKv7AqiHpw2j4HIHQE3g .dropzone .message {
+  text-align: center;
+  display: inline-block;
+  width: 100%;
+  color: #000000;
+  padding-top: 80px;
+}
+.hKv7AqiHpw2j4HIHQE3g .uploader-preview .preview .img {
+  max-width: 215px;
+  max-height: 215px;
+}

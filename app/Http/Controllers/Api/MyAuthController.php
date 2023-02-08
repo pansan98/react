@@ -55,7 +55,7 @@ class MyAuthController extends Controller
 			$data['result'] = true;
 			$data['user'] = [
 				'name' => $user->name,
-				'email' => $user->email
+				'email' => !empty($user->email) ? $user->email : ''
 			];
 		}
 

@@ -1,9 +1,9 @@
-import deepMerge from 'deepmerge';
+import deepmerge from 'deepmerge';
 
 class Loader {
 	constructor(config) {
 		this.d_config = {};
-		this.config = deepMerge(this.d_config, config);
+		this.config = deepmerge(this.d_config, config);
 	}
 }
 

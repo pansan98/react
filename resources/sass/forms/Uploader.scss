@@ -1,0 +1,28 @@
+:local(.app) {
+	:global {
+		.dropzone {
+			height: 200px;
+			background-color: #f4f6f9;
+			&.dragover {
+				background-color: #6c757d;
+			}
+	
+			.message {
+				text-align: center;
+				display: inline-block;
+				width: 100%;
+				color: #000000;
+				padding-top: 80px;
+			}
+		}
+	
+		.uploader-preview {
+			.preview {
+				.img {
+					max-width: 215px;
+					max-height: 215px;
+				}
+			}
+		}
+	}
+}

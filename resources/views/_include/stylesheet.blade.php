@@ -19,4 +19,8 @@
 <link href="/assets/plugins/css/summernote/summernote-bs4.min.css" rel="stylesheet">
 
 <!-- <link href="/build/css/app.css" rel="stylesheet"> -->
+<link href="/assets/css/app.css" rel="stylesheet">
+
+<!-- additional forms -->
+<link href="/assets/css/forms/Uploader.css" rel="stylesheet">
 @yield('stylesheet')

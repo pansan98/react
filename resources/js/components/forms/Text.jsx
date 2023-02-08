@@ -1,4 +1,4 @@
-import React, {useState} from 'react';
+import React from 'react';
 
 class Text extends React.Component {
 	constructor(props) {
@@ -19,6 +19,10 @@ class Text extends React.Component {
 			</div>
 		)
 	}
+}
+
+Text.defaultProps = {
+	type: 'text'
 }
 
 export default Text;
