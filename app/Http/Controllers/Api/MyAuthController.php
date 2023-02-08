@@ -53,7 +53,10 @@ class MyAuthController extends Controller
 		$user = $this->myauth_provider->get();
 		if(!empty($user)) {
 			$data['result'] = true;
-			$data['user'] = $user->toArray();
+			$data['user'] = [
+				'name' => $user->name,
+				'email' => $user->email
+			];
 		}
 
 		return response()->json($data);

@@ -46,7 +46,6 @@ class Register extends React.Component {
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
-				window.alert('登録しました。');
 				this.setState({registered: true});
 			}
 			return;

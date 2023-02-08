@@ -12,7 +12,7 @@ class StopWatch extends Model
 
 	protected $table = 'practice_stopwatch_lap';
 	protected $fillable = ['user_id', 'name', 'total_time'];
-	protected $hidden = [];
+	protected $hidden = ['user_id'];
 
 	/**
 	 * @return HasMany

@@ -1,5 +1,6 @@
 import React from 'react';
 import axios from 'axios';
+import {Link} from 'react-router-dom';
 
 class User extends React.Component {
 	constructor(props)
@@ -10,7 +11,7 @@ class User extends React.Component {
 		}
 	}
 
-	componentWillMount()
+	componentDidMount()
 	{
 		if(!this.props.user) {
 			this.fetch();
@@ -32,13 +33,13 @@ class User extends React.Component {
 		})
 	}
 
-	display()
+	contents()
 	{
 		if(this.props.type === 'side-menu') {
 			return (
 				<div className="user-panel mt-3 pb-3 mb-3 d-flex">
 					<div className="info">
-						{this.state.user.name}
+						<Link to="/my/profile" className="d-block">{this.state.user.name}</Link>
 					</div>
 				</div>
 			)
@@ -53,7 +54,7 @@ class User extends React.Component {
 
 	render() {
 		return (
-			<div>{this.display()}</div>
+			<div>{this.contents()}</div>
 		)
 	}
 }

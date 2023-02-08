@@ -1,15 +1,10 @@
 import React from 'react';
 
-import PageLoader from '../common/PageLoader';
-import GlobalNav from '../common/GlobalNav';
+import Base from './Base';
 
 const Contact = () => {
 	return (
-		<div className="wrapper">
-			<h1>Contact</h1>
-			<PageLoader />
-			<GlobalNav />
-		</div>
+		<Base title="Contact" content="Contents for Contact form" />
 	)
 }
 

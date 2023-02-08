@@ -8,18 +8,15 @@ class Radio extends React.Component {
 	render() {
 		return (
 			<div className="form-group">
-				<div className="form-check-input">
-					<input type="radio" name="radio" id="radio1"/>
-					<label className="form-check-label" htmlFor="radio1">Radio1</label>
-				</div>
-				<div className="form-check-input">
-					<input type="radio" name="radio" id="radio2"/>
-					<label className="form-check-label" htmlFor="radio2">Radio2</label>
-				</div>
-				<div className="form-check-input">
-					<input type="radio" name="radio" id="radio3"/>
-					<label className="form-check-label" htmlFor="radio3">Radio3</label>
-				</div>
+				{this.props.values.map((v, k) => {
+					const key = v.name + '-' + {k};
+					return (
+						<div key={k} className="form-check-input">
+							<input type="radio" name={v.name} id={key}/>
+							<label className="form-check-label" htmlFor={key}>{v.label}</label>
+						</div>
+					)
+				})}
 			</div>
 		)
 	}

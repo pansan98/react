@@ -6,6 +6,7 @@ import {BrowserRouter, Route, Routes} from 'react-router-dom';
 import Home from './pages/Home';
 import Contact from './pages/Contact';
 import StopWatch from './pages/practice/StopWatch';
+import MyProfile from './pages/my/Profile';
 
 // Auth
 import Login from './auth/Login';
@@ -23,6 +24,7 @@ class App extends React.Component {
 					<Routes>
 						<Route path="/" exact element={<Home />} />
 						<Route path="/contact" element={<Contact />} />
+						<Route path="/my/profile" element={<MyProfile />} />
 						<Route path="/practice/stop-watch" element={<StopWatch />} />
 						<Route path="/auth/login" element={<Login />} />
 						<Route path="/auth/register" element={<Register />} />

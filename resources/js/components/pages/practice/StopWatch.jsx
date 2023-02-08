@@ -1,9 +1,7 @@
 import React, {Component} from 'react';
 import axios from 'axios';
 
-import GlobalNav from '../../common/GlobalNav';
-import PageLoader from '../../common/PageLoader';
-import SideMenu from '../../common/SideMenu';
+import Base from '../Base';
 
 class StopWatch extends Component {
 	constructor(props) {
@@ -20,7 +18,7 @@ class StopWatch extends Component {
 	}
 
 	// マウントした時
-	componentWillMount() {
+	componentDidMount() {
 		this.timer = setInterval((e) => {
 			this.tick();
 		}, 1000);
@@ -192,7 +190,7 @@ class StopWatch extends Component {
 										)
 									})
 								}
-								<button key={d_k} onClick={(e) => {this.delete_lap(e)}} data={v.id}>消す</button>
+								<button className="btn btn-danger" key={d_k} onClick={(e) => {this.delete_lap(e)}} data={v.id}>消す</button>
 							</div>
 						)
 					})
@@ -201,43 +199,31 @@ class StopWatch extends Component {
 		</div>)
 	}
 
-	render() {
+	contents() {
 		let label = 'Start';
 		if(this.state.is_live) {
 			label = 'Stop';
 		}
 
 		return (
-			<div className="wrapper">
-				<PageLoader />
-				<GlobalNav />
-				<SideMenu />
-				<div className="content-wrapper">
-					<div className="content-header">
-						<div className="container-fluid">
-							<div className="row mb-2">
-								<div className="col-sm-6">
-									StopWatch Page
-								</div>
-							</div>
-						</div>
-					</div>
-					<section className="content">
-						<div className="container-fluid">
-							<div className="stopwatch-wrapper">
-								<div>{this.time_display()}</div>
-								<button onClick={(e) => {this.c_handler(e)}}>{label}</button>
-								<button onClick={(e) => {this.c_lap(e)}}>Lap</button>
-								<button onClick={(e) => {this.c_save(e)}}>Laps for save</button>
-							</div>
-							{this.get_laps()}
-							<div>
-								{this.laps_display()}
-							</div>
-						</div>
-					</section>
+			<div className="stopwatch-wrapper-box">
+				<div className="stopwatch-wrapper">
+					<div>{this.time_display()}</div>
+					<button className="btn btn-default" onClick={(e) => {this.c_handler(e)}}>{label}</button>
+					<button className="btn btn-default ml-1" onClick={(e) => {this.c_lap(e)}}>Lap</button>
+					<button className="btn btn-primary ml-1" onClick={(e) => {this.c_save(e)}}>Save for Laps</button>
+				</div>
+				{this.get_laps()}
+				<div>
+					{this.laps_display()}
 				</div>
 			</div>
+		)
+	}
+
+	render() {
+		return (
+			<Base title="StopWatch Page" content={this.contents()} />
 		)
 	}
 }
