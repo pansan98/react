@@ -99,6 +99,7 @@ class Profile extends React.Component {
 		const param = {};
 		param[name] = value;
 		this.setState(param);
+		console.log(this.state);
 	}
 
 	async save(e) {
@@ -107,6 +108,7 @@ class Profile extends React.Component {
 			email: this.state.f_email,
 			profession: this.state.f_profession,
 			gender: this.state.f_gender,
+			thumbnail: this.state.f_thumbnail,
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {

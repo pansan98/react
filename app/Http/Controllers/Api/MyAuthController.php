@@ -76,6 +76,7 @@ class MyAuthController extends Controller
 	{
 		$params = $request->request->all();
 		$user = $this->myauth_provider->get();
+		// TODO 画像の登録
 		if(!empty($user)) {
 			$result = DB::transaction(function() use ($user, $params) {
 				$user->fill($params)->save();

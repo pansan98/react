@@ -6,6 +6,7 @@ use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use App\Models\Traits\Common;
 use Illuminate\Database\Eloquent\Relations\HasMany;
+use Illuminate\Database\Eloquent\Relations\HasOne;
 use Illuminate\Database\Eloquent\SoftDeletes;
 
 class MyUser extends Model
@@ -19,7 +20,7 @@ class MyUser extends Model
 	];
 
 	protected $table = 'my_users';
-	protected $fillable = ['login_id', 'password', 'name', 'email', 'profession', 'gender', 'identify_code', 'active_flag', 'delete_flag'];
+	protected $fillable = ['login_id', 'password', 'name', 'email', 'profession', 'gender', 'identify_code', 'thumbnail_id', 'active_flag', 'delete_flag'];
 	protected $hidden = ['login_id', 'password', 'delete_flag'];
 
 	/**
@@ -28,6 +29,14 @@ class MyUser extends Model
 	public function laps()
 	{
 		return $this->hasMany(\App\Models\PS\StopWatch::class, 'user_id', 'id');
+	}
+
+	/**
+	 * @return HasOne
+	 */
+	public function thumbnail()
+	{
+		return $this->hasOne(\App\Models\MyMedia::class, 'id', 'thumbnail_id');
 	}
 
 	public static function labels($label)

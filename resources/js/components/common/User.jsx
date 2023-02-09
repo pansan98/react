@@ -22,6 +22,7 @@ class User extends React.Component {
 
 	async fetch()
 	{
+		// TODO よくメモリ警告がでるのでpending中にUnmountでキャンセルする
 		await axios.get('/api/auth/user', {
 			credentials: 'same-origin'
 		}).then((res) => {
