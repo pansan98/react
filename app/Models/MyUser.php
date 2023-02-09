@@ -30,6 +30,18 @@ class MyUser extends Model
 		return $this->hasMany(\App\Models\PS\StopWatch::class, 'user_id', 'id');
 	}
 
+	public static function labels($label)
+	{
+		$labels = [];
+		switch($label) {
+			case 'gender':
+				$labels = self::GENDER;
+				break;
+		}
+
+		return $labels;
+	}
+
 	public function gender_label()
 	{
 		$gender = '';

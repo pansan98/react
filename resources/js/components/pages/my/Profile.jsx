@@ -18,10 +18,17 @@ class Profile extends React.Component {
 			f_email: '',
 			f_profession: '',
 			f_gender: 0,
+			f_thumbnail: [],
+			profile: {
+				path: '/assets/img/no-image.jpg'
+			},
 			errors: {
 				name: [],
 				email: [],
 				thumbnail: []
+			},
+			forms: {
+				gender: []
 			}
 		}
 	}
@@ -39,6 +46,33 @@ class Profile extends React.Component {
 				f_gender: this.props.user.gender
 			});
 		}
+
+		this.fetch_label('gender');
+	}
+
+	async fetch_label(label)
+	{
+		await axios.get('/api/auth/user/labels', {
+			credentials: 'same-origin',
+			params: {
+				label: label
+			}
+		}).then((res) => {
+			if(res.data.result) {
+				const labels = [];
+				for(let k in res.data.labels) {
+					labels.push({
+						label: res.data.labels[k],
+						value: k
+					})
+				}
+				this.setState({forms: {
+					gender: labels
+				}});
+			}
+		}).catch((e) => {
+			console.log(e);
+		})
 	}
 
 	async fetch()
@@ -72,6 +106,7 @@ class Profile extends React.Component {
 			name: this.state.f_name,
 			email: this.state.f_email,
 			profession: this.state.f_profession,
+			gender: this.state.f_gender,
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
@@ -89,12 +124,12 @@ class Profile extends React.Component {
 					<div className="card card-primary card-outline">
 						<div className="card-body box-profile">
 							<div className="text-center">
-								<img src="/assets/img/no-image.jpg" className="profile-user-img img-fluid img-circle"/>
+								<img src={this.state.profile.path} className="profile-user-img img-fluid img-circle"/>
 								<div className="offset-sm-1 col-sm-10 mt-2">
 									<button className="btn btn-danger">Clear</button>
 								</div>
 							</div>
-							<h3>{this.state.f_name}</h3>
+							<h3 className="text-center">{this.state.f_name}</h3>
 							<p className="text-muted text-center">{this.state.f_profession}</p>
 						</div>
 					</div>
@@ -137,7 +172,19 @@ class Profile extends React.Component {
 										type="text"
 										onChange={(name, value) => this.handlerChange(name, value)}
 									/>
-									<Uploader />
+									<Radio
+										label="性別"
+										formName="f_gender"
+										value={this.state.f_gender}
+										values={this.state.forms.gender}
+										onChange={(name, value) => this.handlerChange(name, value)}
+									/>
+									<Uploader
+										label="画像"
+										formName="f_thumbnail"
+										value={this.state.f_thumbnail}
+										onChange={(name, value) => this.handlerChange(name, value)}
+									/>
 									<Error error={this.state.errors.thumbnail}/>
 								</div>
 								<button className="btn btn-primary" onClick={(e) => this.save(e)}>保存</button>

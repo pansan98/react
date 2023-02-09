@@ -97,10 +97,12 @@ class Login extends React.Component {
 
 	render() {
 		return (
-			<div className="login-box">
-				<PageLoader />
-				<div className="card">
-					{this.login_display()}
+			<div className="login-page">
+				<div className="login-box">
+					<PageLoader />
+					<div className="card">
+						{this.login_display()}
+					</div>
 				</div>
 			</div>
 		)

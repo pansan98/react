@@ -135,10 +135,12 @@ class Register extends React.Component {
 	render()
 	{
 		return (
-			<div className="login-box">
-				<PageLoader />
-				<div className="card">
-					{this.register_display()}
+			<div className="register-page">
+				<div className="register-box">
+					<PageLoader />
+					<div className="card">
+						{this.register_display()}
+					</div>
 				</div>
 			</div>
 		)

@@ -65,6 +65,13 @@ class MyAuthController extends Controller
 		return response()->json($data);
 	}
 
+	public function labels(Request $request)
+	{
+		$label = $request->query->get('label');
+		$labels = MyUser::labels($label);
+		return $this->success(['labels' => $labels]);
+	}
+
 	public function profile(AuthProfileRequest $request)
 	{
 		$params = $request->request->all();
