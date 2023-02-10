@@ -5,6 +5,7 @@ namespace App\Http\Requests;
 use App\Http\Requests\MyRequest;
 use Illuminate\Contracts\Validation\Validator;
 use App\Models\MyUser;
+use Illuminate\Support\Facades\Log;
 
 class AuthProfileRequest extends MyRequest
 {
@@ -35,12 +36,14 @@ class AuthProfileRequest extends MyRequest
 			if(!is_array($thumbnails)) {
 				$validator->errors()->add('thumbnail', '正しいファイル情報ではないようです。');
 			} else {
-				// 単品で取得
-				$thumbnail = array_slice($thumbnails, 0, 1);
-				if(empty($thumbnail['identify_code'])) {
-					$validator->errors()->add('thumbnail', '識別できないファイルです。');
+				if(!empty($thumbnails)) {
+					// 単品で取得
+					$thumbnail = isset($thumbnails[0]) ? $thumbnails[0] : [];
+					if(empty($thumbnail['identify_code'])) {
+						$validator->errors()->add('thumbnail', '識別できないファイルです。');
+					}
 				}
 			}
-		})
+		});
 	}
 }

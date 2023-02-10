@@ -23,4 +23,5 @@
 
 <!-- additional forms -->
 <link href="/assets/css/forms/Uploader.css" rel="stylesheet">
+<link href="/assets/css/common/Loader.css" rel="stylesheet">
 @yield('stylesheet')

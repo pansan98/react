@@ -1,5 +1,4 @@
 import React from 'react';
-import Loader from 'react-loader-spinner';
 
 import FileUploader from '../plugins/FileUploader';
 import Style from '../../../sass/forms/Uploader';
@@ -145,7 +144,8 @@ Uploader.defaultProps = {
 	action: 'upload-action',
 	dropzone: 'upload-dropzoen',
 	uploaded: 'uploaded',
-	message: 'ファイルをアップロード'
+	message: 'ファイルをアップロード',
+	value: {}
 }
 
 export default Uploader;

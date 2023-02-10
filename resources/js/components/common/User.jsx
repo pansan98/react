@@ -40,7 +40,7 @@ class User extends React.Component {
 			return (
 				<div className="user-panel mt-3 pb-3 mb-3 d-flex">
 					<div className="image">
-						<img src="/assets/img/no-image.jpg" className="img-circle elevation-2"/>
+						<img src={(this.state.user.thumbnail) ? this.state.user.thumbnail.path : '/assets/img/no-image.jpg'} className="img-circle elevation-2"/>
 					</div>
 					<div className="info">
 						<Link to="/my/profile" className="d-block">{this.state.user.name}</Link>

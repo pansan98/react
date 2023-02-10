@@ -58,7 +58,8 @@ class MyAuthController extends Controller
 				'name' => $user->name,
 				'email' => $user->email,
 				'profession' => $user->profession,
-				'gender' => $user->gender
+				'gender' => $user->gender,
+				'thumbnail' => $user->thumbnail
 			];
 		}
 
@@ -76,15 +77,43 @@ class MyAuthController extends Controller
 	{
 		$params = $request->request->all();
 		$user = $this->myauth_provider->get();
-		// TODO 画像の登録
 		if(!empty($user)) {
 			$result = DB::transaction(function() use ($user, $params) {
+				$ret = [];
+				if(!empty($params['thumbnail'])) {
+					$thumbnail = isset($params['thumbnail'][0]) ? $params['thumbnail'][0] : null;
+					if(!empty($thumbnail)) {
+						/** @var \App\Providers\MediaServiceProvider $mediaService */
+						$mediaService = app(\App\Providers\MediaServiceProvider::class);
+						$mediaService->add_path($user->identify_code);
+						$media = $mediaService->save($thumbnail);
+						if(!empty($media)) {
+							$params['thumbnail_id'] = $media->id;
+							$ret['path'] = $media->path;
+						}
+					}
+				}
 				$user->fill($params)->save();
-				return true;
+				if(empty($ret['path'])) {
+					$ret['path'] = ($user->thumbnail) ? $user->thumbnail->path : null;
+				}
+				return $ret;
 			});
-			return $this->success();
+			return $this->success($result);
 		}
 
 		return $this->failed();
+	}
+
+	public function thumbnail_destroy(Request $request)
+	{
+		$user = $this->myauth_provider->get();
+		if($user->thumbnail) {
+			/** @var \App\Providers\MediaServiceProvider $mediaService */
+			$mediaService = app(\App\Providers\MediaServiceProvider::class);
+			$mediaService->destroy($user->thumbnail->id);
+		}
+
+		return $this->success();
 	}
 }

@@ -2,6 +2,8 @@ import React from 'react';
 import axios from 'axios';
 import {Link} from 'react-router-dom';
 
+import Loader from '../../common/Loader';
+
 import Base from '../Base';
 
 import Text from '../../forms/Text';
@@ -29,7 +31,8 @@ class Profile extends React.Component {
 			},
 			forms: {
 				gender: []
-			}
+			},
+			loading: false
 		}
 	}
 
@@ -67,8 +70,8 @@ class Profile extends React.Component {
 					})
 				}
 				this.setState({forms: {
-					gender: labels
-				}});
+					gender: labels,
+				}})
 			}
 		}).catch((e) => {
 			console.log(e);
@@ -99,10 +102,10 @@ class Profile extends React.Component {
 		const param = {};
 		param[name] = value;
 		this.setState(param);
-		console.log(this.state);
 	}
 
 	async save(e) {
+		this.setState({loading: true});
 		await axios.post('/api/auth/profile', {
 			name: this.state.f_name,
 			email: this.state.f_email,
@@ -112,23 +115,62 @@ class Profile extends React.Component {
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
+				this.setState({
+					f_thumbnail: [],
+					user: {
+						thumbnail: {
+							path: res.data.path
+						}
+					}
+				})
 				window.alert('更新しました。');
 			}
 		}).catch((e) => {
+			if(e.response.status === 400) {
+				this.setState({errors: e.response.data.errors});
+			}
 			console.log(e);
+		}).finally(() => {
+			this.setState({loading: false});
 		})
 	}
 
+	async clear(e) {
+		if(this.state.user.thumbnail) {
+			this.setState({loading: true});
+			await axios.post('/api/auth/profile/thumbnail/destroy', {
+				credentials: 'same-origin'
+			}).then((res) => {
+				if(res.data.result) {
+					this.setState({user: {
+						thumbnail: null
+					}})
+				}
+			}).catch((e) => {
+				console.log(e);
+			}).finally(() => {
+				this.setState({loading: false})
+			})
+		}
+	}
+
 	contents() {
+		let clear_disabled = '';
+		if(!this.state.user.thumbnail) {
+			clear_disabled = ' disabled';
+		}
 		return (
 			<div className="row">
+				<Loader
+					is_loading={this.state.loading}
+				/>
 				<div className="col-md-3">
 					<div className="card card-primary card-outline">
 						<div className="card-body box-profile">
 							<div className="text-center">
-								<img src={this.state.profile.path} className="profile-user-img img-fluid img-circle"/>
+								<img src={(this.state.user.thumbnail) ? this.state.user.thumbnail.path : '/assets/img/no-image.jpg'} className="profile-user-img img-fluid img-circle"/>
 								<div className="offset-sm-1 col-sm-10 mt-2">
-									<button className="btn btn-danger">Clear</button>
+									<button className={`btn btn-danger${clear_disabled}`} onClick={(e) => this.clear(e)}>Clear</button>
 								</div>
 							</div>
 							<h3 className="text-center">{this.state.f_name}</h3>

@@ -1,5 +1,3 @@
-import deepmerge from 'deepmerge';
-
 import State from './State';
 
 class FileUploader {
@@ -45,41 +43,44 @@ class FileUploader {
 					return false;
 				})
 
-				this.config.state.__set('uploading');
-				let files = 0;
-				const done = this.done.bind(this);
-				this.files.map((file) => {
-					const reader = new FileReader();
-					const uniq = new Date().getTime();
-					reader.onload = () => {
-						const src = reader.result;
-						this.config.files.push({
-							path: URL.createObjectURL(file),
-							name: file.name,
-							value: src,
-							identify_code: uniq,
-							type: 'image'
-						})
-						files++;
-						done(files);
-					}
-
-					reader.onerror = () => {
-						files++;
-						const errors = {
-							identify_code: uniq,
-							value: file
+				if(this.files.length) {
+					this.config.state.__set('uploading');
+					let files = 0;
+					const done = this.done.bind(this);
+					this.files.map((file) => {
+						const reader = new FileReader();
+						const uniq = new Date().getTime();
+						reader.onload = () => {
+							const src = reader.result;
+							this.config.files.push({
+								path: URL.createObjectURL(file),
+								name: file.name,
+								value: decodeURIComponent(src),
+								identify_code: uniq,
+								type: 'image',
+								size: this.get_size(file, 'byte')
+							})
+							files++;
+							done(files);
 						}
-						this.config.errors.push(errors);
-						if(typeof this.config.callbacks.failed_fn === 'function') {
-							this.config.callback_args.failed.push(errors);
-							this.config.callbacks.failed_fn(this.config.callback_args.failed);
-						}
-						done(files);
-					}
 
-					reader.readAsDataURL(file);
-				})
+						reader.onerror = () => {
+							files++;
+							const errors = {
+								identify_code: uniq,
+								value: file
+							}
+							this.config.errors.push(errors);
+							if(typeof this.config.callbacks.failed_fn === 'function') {
+								this.config.callback_args.failed.push(errors);
+								this.config.callbacks.failed_fn(this.config.callback_args.failed);
+							}
+							done(files);
+						}
+
+						reader.readAsDataURL(file);
+					})
+				}
 			}
 		}
 	}
@@ -122,6 +123,9 @@ class FileUploader {
 		switch(unit) {
 			case 'mb':
 				size = Math.floor(file.size / (1024 * 1024));
+				break;
+			default:
+				size = file.size;
 				break;
 		}
 
