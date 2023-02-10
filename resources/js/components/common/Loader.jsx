@@ -1,5 +1,5 @@
 import React from 'react';
-import {InfinitySpin} from 'react-loader-spinner';
+import {RevolvingDot} from 'react-loader-spinner';
 
 import Style from '../../../sass/common/Loader';
 
@@ -13,8 +13,8 @@ class Loader extends React.Component {
 			return (
 				<div className={Style.loader}>
 					<div className="overlay"></div>
-					<InfinitySpin
-						color="blue"
+					<RevolvingDot
+						color="#61dbfb"
 					/>
 				</div>
 			)

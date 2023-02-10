@@ -6,6 +6,9 @@ PHP 8.0
 React 17.0
 MySQL 8.0
 
+### Tools
+Webpack 5.75
+
 ## Learning
 
 Laravel + Reactの勉強用リポジトリです。

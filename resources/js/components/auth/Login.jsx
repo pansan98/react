@@ -115,18 +115,20 @@ class Login extends React.Component {
 						<label>OS</label>
 						<p>{this.state.sharings.os}</p>
 					</div>
-					<button
-						className="btn btn-primary"
-						onClick={(e) => this.use_sharing(e)}
-					>
-						登録
-					</button>
-					<button
-						className="btn btn-default ml-auto"
-						onClick={(e) => this.application_sharing(e)}
-					>
-						拒否
-					</button>
+					<div className="d-flex">
+						<button
+							className="btn btn-default"
+							onClick={(e) => this.application_sharing(e)}
+						>
+							拒否
+						</button>
+						<button
+							className="btn btn-primary ml-auto"
+							onClick={(e) => this.use_sharing(e)}
+						>
+							登録
+						</button>
+					</div>
 				</div>
 			)
 		} else {
