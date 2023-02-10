@@ -18,7 +18,15 @@ class Login extends React.Component {
 				login_error: []
 			},
 			login: false,
-			loading: false
+			loading: false,
+			share: false,
+			sharings: {
+				sharing: false,
+				sharing_available: false,
+				ip: '',
+				os: '',
+				use: 0
+			}
 		}
 	}
 
@@ -39,7 +47,14 @@ class Login extends React.Component {
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
-				this.setState({login: true});
+				if(res.data.share) {
+					this.setState({
+						share: res.data.share,
+						sharings: res.data.sharings
+					});
+				} else {
+					this.setState({login: true});
+				}
 			}
 			return;
 		}).catch((e) => {
@@ -51,9 +66,88 @@ class Login extends React.Component {
 		})
 	}
 
+	async use_sharing(e) {
+		this.setState({loading: true});
+		await axios.post('/api/auth/sharing/use', {
+			ip: this.state.sharings.ip,
+			os: this.state.sharings.os,
+			login_id: this.state.login_id,
+			password: this.state.password,
+			credentials: 'same-origin'
+		}).then((res) => {
+			if(res.data.result) {
+				this.setState({login: true});
+			}
+		}).catch((e) => {
+			console.log(e);
+		}).finally(() => {
+			this.setState({loading: false});
+		})
+	}
+
+	sharing_display()
+	{
+		if(this.state.sharings.sharing_available) {
+			return (
+				<div className="card-body">
+					<p className="sharing-box-msg">
+						下記情報を登録しますか？<br/>
+						複数端末ログインは最大3台までです。<br/>
+						現在の端末数：{this.state.sharings.use}台
+					</p>
+					<div className="form-group">
+						<label>IP</label>
+						<p>{this.state.sharings.ip}</p>
+					</div>
+					<div className="form-group">
+						<label>OS</label>
+						<p>{this.state.sharings.os}</p>
+					</div>
+					<button
+						className="btn btn-primary"
+						onClick={(e) => this.use_sharing(e)}
+					>
+						登録
+					</button>
+					<button
+						className="btn btn-default ml-auto"
+						onClick={(e) => this.setState({
+							share: false,
+							sharings: {
+								ip: '',
+								os: '',
+								sharing_available: false,
+								use: 0
+							}
+						})}
+					>
+						拒否
+					</button>
+				</div>
+			)
+		} else {
+			return (
+				<div className="card-body">
+					<p className="sharing-box-msg">
+						端末数の上限に達しました。<br/>
+						シェア済みの端末でログインを続けるか、シェア済みの端末を削除してください。
+					</p>
+					<button
+						className="btn btn-primary"
+					>
+						端末削除申請
+					</button>
+				</div>
+			)
+		}
+	}
+
 	login_display()
 	{
 		if(!this.state.login) {
+			if(this.state.share) {
+				return this.sharing_display();
+			}
 			return (
 				<div className="card-body">
 					<Error

@@ -8,8 +8,8 @@ use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthProfileRequest;
 use App\Http\Controllers\Controller;
 use App\Models\MyUser;
+use App\Models\SharingLogin;
 use Illuminate\Support\Facades\DB;
-use Throwable;
 use Illuminate\Support\Facades\Log;
 
 class MyAuthController extends Controller
@@ -17,7 +17,8 @@ class MyAuthController extends Controller
 	public function login(AuthLoginRequest $request)
 	{
 		$res = [
-			'result' => false
+			'result' => false,
+			'share' => false
 		];
 		$params = $request->request->all();
 		$user = MyUser::where('login_id', $params['login_id'])
@@ -25,9 +26,41 @@ class MyAuthController extends Controller
 			->first();
 		if(!empty($user)) {
 			if(password_verify($params['password'], $user->password)) {
-				$request->session()->put('identify', $user->identify_code);
-				$user->fill(['active_flag' => 1])->save();
-				$res['result'] = true;
+				$ip = $request->ip();
+				$os = $request->header('User-Agent');
+				$sharing = SharingLogin::where('ip', $ip)
+					->where('os', $os)
+					->where('user_id', $user->id)
+					->first();
+				if(!empty($sharing)) {
+					$this->myauth_provider->retension($user->identify_code);
+					return $this->success();
+				} else {
+					$sharings = SharingLogin::where('user_id', $user->id)->get()->toArray();
+					if(count($sharings) < SharingLogin::MAX_USE) {
+						$res = [
+							'result' => true,
+							'share' => true,
+							'sharings' => [
+								'sharing' => true,
+								'sharing_available' => true,
+								'ip' => $ip,
+								'os' => $os,
+								'use' => count($sharings)
+							]
+						];
+					} else {
+						$res = [
+							'result' => true,
+							'share' => true,
+							'sharings' => [
+								'sharing' => true,
+								'sharing_available' => false,
+								'use' => count($sharings)
+							]
+						];
+					}
+				}
 			}
 		}
 
@@ -50,9 +83,19 @@ class MyAuthController extends Controller
 		$params['password'] = password_hash($params['password'], PASSWORD_DEFAULT);
 		$params['identify_code'] = MyUser::identify_code();
 		$res = ['result' => false];
-		$res['result'] = DB::transaction(function() use ($params) {
+		$res['result'] = DB::transaction(function() use ($params, $request) {
 			$my_user = new MyUser();
 			$my_user->fill($params)->save();
+
+			$ip = $request->ip();
+			$os = $request->header('User-Agent');
+			$sharing = new SharingLogin();
+			$sharing->fill([
+				'user_id' => $my_user->id,
+				'ip' => $ip,
+				'os' => $os
+			])->save();
+
 			return true;
 		});
 

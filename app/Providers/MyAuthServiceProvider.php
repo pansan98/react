@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Models\MyUser;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class MyAuthServiceProvider extends ServiceProvider
@@ -39,6 +40,22 @@ class MyAuthServiceProvider extends ServiceProvider
 					->where('delete_flag', 0)
 					->first();
 			}
+		}
+	}
+
+	public function retension($identify)
+	{
+		$user = MyUser::where('identify_code', $identify)->first();
+		if($user) {
+			try {
+				$ret = DB::transaction(function() use ($user) {
+					$user->fill(['active_flag' => 1])->save();
+					return true;
+				});
+				if($ret) {
+					session()->put('identify', $identify);
+				}
+			} catch(\Exception $e) {}
 		}
 	}
 
