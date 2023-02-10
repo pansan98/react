@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 import axios from 'axios';
 
+import Loader from '../common/Loader';
 import PageLoader from '../common/PageLoader';
 import Text from '../forms/Text';
 import Error from '../forms/Error';
@@ -23,7 +24,8 @@ class Register extends React.Component {
 				password_confirmation: [],
 				email: []
 			},
-			registered: false
+			registered: false,
+			loading: false
 		}
 	}
 
@@ -37,6 +39,7 @@ class Register extends React.Component {
 	async onSave(e)
 	{
 		e.preventDefault();
+		this.setState({loading: true});
 		await axios.post('/api/auth/register', {
 			name: this.state.name,
 			login_id: this.state.login_id,
@@ -53,6 +56,8 @@ class Register extends React.Component {
 			if(e.response.status === 400) {
 				this.setState({errors: e.response.data.errors});
 			}
+		}).finally(() => {
+			this.setState({loading: false})
 		})
 	}
 
@@ -136,6 +141,9 @@ class Register extends React.Component {
 	{
 		return (
 			<div className="register-page">
+				<Loader
+					is_loading={this.state.loading}
+				/>
 				<div className="register-box">
 					<PageLoader />
 					<div className="card">

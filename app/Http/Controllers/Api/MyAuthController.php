@@ -26,11 +26,22 @@ class MyAuthController extends Controller
 		if(!empty($user)) {
 			if(password_verify($params['password'], $user->password)) {
 				$request->session()->put('identify', $user->identify_code);
+				$user->fill(['active_flag' => 1])->save();
 				$res['result'] = true;
 			}
 		}
 
 		return response()->json($res);
+	}
+
+	public function logout(Request $request)
+	{
+		$user = $this->myauth_provider->get();
+		if($user) {
+			$user->fill(['active_flag' => 0])->save();
+		}
+		$request->session()->remove('identify');
+		return $this->success();
 	}
 
 	public function register(AuthRegisterRequest $request)

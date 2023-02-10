@@ -226,6 +226,7 @@ class Profile extends React.Component {
 									<Uploader
 										label="画像"
 										formName="f_thumbnail"
+										message="画像をアップロード"
 										value={this.state.f_thumbnail}
 										onChange={(name, value) => this.handlerChange(name, value)}
 									/>

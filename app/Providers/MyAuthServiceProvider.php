@@ -42,6 +42,9 @@ class MyAuthServiceProvider extends ServiceProvider
 		}
 	}
 
+	/**
+	 * @return MyUser|Mixed
+	 */
 	public function get()
 	{
 		$this->add();

@@ -1,6 +1,7 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
+import Loader from '../common/Loader';
 import PageLoader from '../common/PageLoader';
 import Text from '../forms/Text';
 import Error from '../forms/Error';
@@ -16,7 +17,8 @@ class Login extends React.Component {
 				password: [],
 				login_error: []
 			},
-			login: false
+			login: false,
+			loading: false
 		}
 	}
 
@@ -30,6 +32,7 @@ class Login extends React.Component {
 	async onLogin(e)
 	{
 		e.preventDefault();
+		this.setState({loading: true});
 		await axios.post('/api/auth/login', {
 			login_id: this.state.login_id,
 			password: this.state.password,
@@ -43,6 +46,8 @@ class Login extends React.Component {
 			if(e.response.status === 400) {
 				this.setState({errors: e.response.data.errors});
 			}
+		}).finally(() => {
+			this.setState({loading: false})
 		})
 	}
 
@@ -98,6 +103,9 @@ class Login extends React.Component {
 	render() {
 		return (
 			<div className="login-page">
+				<Loader
+					is_loading={this.state.loading}
+				/>
 				<div className="login-box">
 					<PageLoader />
 					<div className="card">
