@@ -13,12 +13,12 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('sharing_login', function (Blueprint $table) {
+        Schema::create('shop_favorites', function (Blueprint $table) {
             $table->increments('id');
-            $table->integer('user_id')->unsigned();
+            $table->unsignedInteger('user_id');
             $table->foreign('user_id')->references('id')->on('my_users')->onDelete('cascade');
-            $table->longText('os')->nullable();
-            $table->string('ip', 20);
+            $table->unsignedInteger('product_id');
+            $table->foreign('product_id')->references('id')->on('shop_products')->onDelete('cascade');
             $table->timestamps();
         });
     }
@@ -30,6 +30,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('sharing_login');
+        Schema::dropIfExists('shop_favorites');
     }
 };

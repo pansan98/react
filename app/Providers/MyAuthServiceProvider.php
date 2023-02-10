@@ -31,6 +31,9 @@ class MyAuthServiceProvider extends ServiceProvider
 	{
 	}
 
+	/**
+	 * ログイン中のユーザーを追加する
+	 */
 	protected function add()
 	{
 		if(empty($this->user)) {
@@ -38,24 +41,32 @@ class MyAuthServiceProvider extends ServiceProvider
 			if(!empty($identify)) {
 				$this->user = MyUser::with(['thumbnail'])->where('identify_code', $identify)
 					->where('delete_flag', 0)
+					->whereNot('active_sharing_id')
 					->first();
 			}
 		}
 	}
 
-	public function retension($identify)
+	/**
+	 * ログインしたユーザー識別コードを保持する
+	 * @param [type] $identify
+	 * @param \App\Models\SharingLogin $sharing
+	 */
+	public function retension($identify, \App\Models\SharingLogin $sharing)
 	{
 		$user = MyUser::where('identify_code', $identify)->first();
 		if($user) {
 			try {
-				$ret = DB::transaction(function() use ($user) {
-					$user->fill(['active_flag' => 1])->save();
+				$ret = DB::transaction(function() use ($user, $sharing) {
+					$user->fill(['active_flag' => 1, 'active_sharing_id' => $sharing->id])->save();
 					return true;
 				});
 				if($ret) {
 					session()->put('identify', $identify);
 				}
-			} catch(\Exception $e) {}
+			} catch(\Exception $e) {
+				Log::warning($e->getMessage());
+			}
 		}
 	}
 

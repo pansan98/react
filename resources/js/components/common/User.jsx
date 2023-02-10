@@ -3,16 +3,15 @@ import axios from 'axios';
 import {Link} from 'react-router-dom';
 
 class User extends React.Component {
-	constructor(props)
-	{
+	constructor(props) {
 		super(props);
 		this.state = {
 			user: {}
 		}
+		this.axiosCancelToken;
 	}
 
-	componentDidMount()
-	{
+	componentDidMount() {
 		if(!this.props.user) {
 			this.fetch();
 		} else {
@@ -20,11 +19,15 @@ class User extends React.Component {
 		}
 	}
 
-	async fetch()
-	{
-		// TODO よくメモリ警告がでるのでpending中にUnmountでキャンセルする
+	componentWillUnmount() {
+		this.axiosCancelToken.cancel();
+	}
+
+	async fetch() {
+		this.axiosCancelToken = axios.CancelToken.source();
 		await axios.get('/api/auth/user', {
-			credentials: 'same-origin'
+			credentials: 'same-origin',
+			cancelToken: this.axiosCancelToken.token
 		}).then((res) => {
 			if(res.data.result) {
 				this.setState({user: res.data.user})
@@ -34,8 +37,7 @@ class User extends React.Component {
 		})
 	}
 
-	contents()
-	{
+	contents() {
 		if(this.props.type === 'side-menu') {
 			return (
 				<div className="user-panel mt-3 pb-3 mb-3 d-flex">

@@ -7,6 +7,7 @@ import Home from './pages/Home';
 import Contact from './pages/Contact';
 import StopWatch from './pages/practice/StopWatch';
 import MyProfile from './pages/my/Profile';
+import Shop from './pages/Shop';
 
 // Auth
 import Login from './auth/Login';
@@ -24,6 +25,7 @@ class App extends React.Component {
 					<Routes>
 						<Route path="/" exact element={<Home />} />
 						<Route path="/contact" element={<Contact />} />
+						<Route path="/shop" element={<Shop />} />
 						<Route path="/my/profile" element={<MyProfile />} />
 						<Route path="/practice/stop-watch" element={<StopWatch />} />
 						<Route path="/auth/login" element={<Login />} />

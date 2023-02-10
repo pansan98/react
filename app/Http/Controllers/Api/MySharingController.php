@@ -18,19 +18,24 @@ class MySharingController extends MyAuthController
 			->first();
 		if(!empty($user)) {
 			if(password_verify($params['password'], $user->password)) {
-				$ret = DB::transaction(function() use ($params, $user) {
+				list($ret, $sharing) = DB::transaction(function() use ($params, $user) {
 					$sharing = new SharingLogin();
 					$sharing->fill(array_merge($params, [
 						'user_id' => $user->id
 					]))->save();
-					return true;
+					return [true, $sharing];
 				});
 				if($ret) {
-					$this->myauth_provider->retension($user->identify_code);
+					$this->myauth_provider->retension($user->identify_code, $sharing);
 					return $this->success();
 				}
 			}
 		}
 		return $this->failed();
+	}
+
+	public function approval(Request $request)
+	{
+		
 	}
 }

@@ -85,6 +85,18 @@ class Login extends React.Component {
 		})
 	}
 
+	application_sharing(e) {
+		this.setState({
+			share: false,
+			sharings: {
+				ip: '',
+				os: '',
+				sharing_available: false,
+				use: 0
+			}
+		})
+	}
+
 	sharing_display()
 	{
 		if(this.state.sharings.sharing_available) {
@@ -111,15 +123,7 @@ class Login extends React.Component {
 					</button>
 					<button
 						className="btn btn-default ml-auto"
-						onClick={(e) => this.setState({
-							share: false,
-							sharings: {
-								ip: '',
-								os: '',
-								sharing_available: false,
-								use: 0
-							}
-						})}
+						onClick={(e) => this.application_sharing(e)}
 					>
 						拒否
 					</button>

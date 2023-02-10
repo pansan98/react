@@ -33,7 +33,7 @@ class MyAuthController extends Controller
 					->where('user_id', $user->id)
 					->first();
 				if(!empty($sharing)) {
-					$this->myauth_provider->retension($user->identify_code);
+					$this->myauth_provider->retension($user->identify_code, $sharing);
 					return $this->success();
 				} else {
 					$sharings = SharingLogin::where('user_id', $user->id)->get()->toArray();
@@ -71,7 +71,7 @@ class MyAuthController extends Controller
 	{
 		$user = $this->myauth_provider->get();
 		if($user) {
-			$user->fill(['active_flag' => 0])->save();
+			$user->fill(['active_flag' => 0, 'active_sharing_id' => null])->save();
 		}
 		$request->session()->remove('identify');
 		return $this->success();
