@@ -10,12 +10,18 @@ use Illuminate\Support\Facades\DB;
 
 class ShopProductController extends Controller
 {
-	public function products(Request $reuqest)
+	public function products(Request $request)
 	{
 		$user = $this->myauth_provider->get();
+		$search = $request->query->get('search', '');
 		if(!empty($user)) {
 			$products = ShopProducts::where('user_id', $user->id)
 				->where('deleted_at', null)
+				->where(function($query) use ($search) {
+					if(!empty($search)) {
+						$query->where('name', 'LIKE', '%'.$search.'%');
+					}
+				})
 				->orderByDesc('id')
 				->get()
 				->toArray();
@@ -56,7 +62,9 @@ class ShopProductController extends Controller
 				$product->fill($params)->save();
 				return true;
 			});
-			return $this->success();
+			if($ret) {
+				return $this->success();
+			}
 		}
 
 		return $this->failed();
@@ -65,5 +73,42 @@ class ShopProductController extends Controller
 	public function edit(ShopProductRequest $request, $identify)
 	{
 		$params = $request->request->all();
+		$user = $this->myauth_provider->get();
+		if(!empty($user)) {
+			$ret = DB::transaction(function() use ($params, $user, $identify) {
+				$product = ShopProducts::where('user_id', $user->id)
+					->where('identify_code', $identify)
+					->where('deleted_at', null)
+					->first();
+				if($product) {
+					$product->fill($params)->save();
+				}
+				return true;
+			});
+			if($ret) {
+				return $this->success();
+			}
+		}
+		return $this->failed();
+	}
+
+	public function destroy(Request $request, $identify)
+	{
+		$user = $this->myauth_provider->get();
+		if(!empty($user)) {
+			$ret = DB::transaction(function() use ($user, $identify) {
+				$product = ShopProducts::where('user_id', $user->id)
+					->where('identify_code', $identify)
+					->where('deleted_at', null)
+					->first();
+				if(!empty($product)) {
+					$product->delete();
+				}
+				return true;
+			});
+			return $this->success();
+		}
+
+		return $this->failed();
 	}
 }

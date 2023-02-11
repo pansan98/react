@@ -17,7 +17,7 @@ class Search extends React.Component {
 						onChange={(e) => this.props.onChange(this.props.formName, e.currentTarget.value)}
 					/>
 					<div className="input-group-append">
-						<button className="btn btn-default">
+						<button className="btn btn-default" onClick={(e) => this.props.onSearch(e)}>
 							検索
 						</button>
 					</div>

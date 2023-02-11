@@ -14,7 +14,15 @@ class Radio extends React.Component {
 						const key = this.props.formName + '-' + k;
 						return (
 							<div key={k} className="form-check">
-								<input className="form-check-input" type="radio" value={v.value} name={this.props.formName} id={key} onChange={(e) => this.props.onChange(this.props.formName, e.currentTarget.value)} checked={this.props.value == v.value}/>
+								<input
+									className="form-check-input"
+									type="radio"
+									value={v.value}
+									name={this.props.formName}
+									id={key}
+									onChange={(e) => this.props.onChange(this.props.formName, e.currentTarget.value)}
+									checked={this.props.value == v.value}
+								/>
 								<label className="form-check-label" htmlFor={key}>{v.label}</label>
 							</div>
 						)

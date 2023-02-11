@@ -9,9 +9,16 @@ class Select extends React.Component {
 		return (
 			<div className="form-group">
 				<label>{this.props.label}</label>
-				<select className="custom-select form-control" onChange={(e) => this.props.onChange(this.props.formName, e.currentTarget.value)}>
+				<select className="custom-select form-control" value={this.props.value} onChange={(e) => this.props.onChange(this.props.formName, e.currentTarget.value)}>
 					{this.props.values.map((v, k) => {
-						return (<option key={k} value={v.value}>{v.label}</option>)
+						return (
+							<option
+								key={k}
+								value={v.value}
+							>
+								{v.label}
+							</option>
+						)
 					})}
 				</select>
 			</div>

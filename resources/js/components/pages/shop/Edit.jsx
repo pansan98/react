@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 import Loader from '../../common/Loader';
 
@@ -43,13 +44,40 @@ class Edit extends React.Component {
 				fasted_delivery_day: [],
 				customs: []
 			},
+			labels: {
+				inventoly: [],
+				inventoly_danger: [],
+				max_purchase: [],
+				fasted_delivery_day: []
+			},
 			loading: false,
 			saved: false
 		}
 	}
 
 	componentDidMount() {
+
 		this.setState({identify_code: this.props.code})
+		if(this.props.code !== '') {
+			axios.get('/api/shop/product/' + this.props.code, {
+				credentials: 'same-origin'
+			}).then((res) => {
+				if(res.data.result) {
+					this.setState({
+						name: res.data.product.name,
+						price: res.data.product.price,
+						description: res.data.product.description,
+						benefits: res.data.product.benefits,
+						inventoly: res.data.product.inventoly,
+						inventoly_danger: res.data.product.inventoly_danger,
+						max_purchase: res.data.product.max_purchase,
+						fasted_delivery_day: res.data.product.fasted_delivery_day
+					})
+				}
+			}).catch((e) => {
+				console.log(e);
+			})
+		}
 	}
 
 	handlerChange(name, value)
@@ -99,7 +127,10 @@ class Edit extends React.Component {
 					<Loader is_loading={this.state.loading}/>
 					<div className="col-12">
 						<div className="card p-3">
-							<button className="btn btn-primary ml-auto" onClick={(e) => this.save(e)}>{this.props.page}</button>
+							<div className="d-flex">
+								<Link to="/shop" className="btn btn-default">戻る</Link>
+								<button className="btn btn-primary ml-auto" onClick={(e) => this.save(e)}>{this.props.page}</button>
+							</div>
 							<div className="card-body">
 								<Text
 									label="商品名"
@@ -135,7 +166,7 @@ class Edit extends React.Component {
 								<Textarea
 									label="商品説明欄"
 									formName="description"
-									value={this.state.description}
+									value={(this.state.description) ? this.state.description : ''}
 									row="5"
 									onChange={(name, value) => this.handlerChange(name, value)}
 								/>

@@ -2,6 +2,7 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 
 import Base from './Base';
+import Loader from '../common/Loader';
 import Search from '../forms/Search';
 
 class Shop extends React.Component {
@@ -9,12 +10,20 @@ class Shop extends React.Component {
 		super(props);
 		this.state = {
 			search: '',
-			products: []
+			products: [],
+			loading: false
 		}
 	}
 
 	componentDidMount() {
+		this.fetch();
+	}
+
+	async fetch(callback_fn) {
 		axios.get('/api/shop/products', {
+			params: {
+				search: this.state.search
+			},
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
@@ -22,6 +31,10 @@ class Shop extends React.Component {
 			}
 		}).catch((e) => {
 			console.log(e);
+		}).finally(() => {
+			if(typeof callback_fn === 'function') {
+				callback_fn();
+			}
 		})
 	}
 
@@ -31,15 +44,41 @@ class Shop extends React.Component {
 		this.setState(param);
 	}
 
+	async destroy(e, identify) {
+		this.setState({loading: true});
+		await axios.post('/api/shop/product/destroy/' + identify, {
+			credentials: 'same-origin'
+		}).then((res) => {
+			if(res.data.result) {
+				this.fetch(() => {
+					this.setState({loading: false});
+				})
+			}
+		}).catch((e) => {
+			console.log(e);
+			this.setState({loading: false});
+		})
+	}
+
+	async search(e) {
+		this.setState({loading: true});
+		await this.fetch(() => {
+			this.setState({loading: false});
+		})
+	}
+
 	contents() {
 		return (
 			<div>
+				<Loader is_loading={this.state.loading}/>
 				<div className="card">
 					<div className="card-body">
 						<div className="search-form d-flex mt-2 p-1">
 							<Search
 								value={this.state.search}
+								formName="search"
 								onChange={(name, value) => this.handlerSearch(name, value)}
+								onSearch={(e) => this.search(e)}
 							/>
 							<Link to="/shop/create" className="btn btn-primary ml-auto">追加</Link>
 						</div>
@@ -83,7 +122,7 @@ class Shop extends React.Component {
 													Page
 												</button>
 												<Link to={`/shop/edit/${v.identify_code}`} className="btn btn-info btn-sm ml-1">Edit</Link>
-												<button className="btn btn-danger btn-sm ml-1">
+												<button className="btn btn-danger btn-sm ml-1" onClick={(e) => this.destroy(e, v.identify_code)}>
 													Delete
 												</button>
 											</td>
