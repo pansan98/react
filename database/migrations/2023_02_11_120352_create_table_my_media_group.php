@@ -13,12 +13,8 @@ return new class extends Migration
      */
     public function up()
     {
-        Schema::create('my_media', function (Blueprint $table) {
-            $table->increments('id')->unsigned();
-            $table->string('mime', 100);
-            $table->string('ext', 100);
-            $table->longText('path')->comment('base64');
-            $table->longText('name')->nullable()->comment('ファイル名');
+        Schema::create('my_media_group', function (Blueprint $table) {
+            $table->increments('id');
             $table->timestamps();
         });
     }
@@ -30,6 +26,6 @@ return new class extends Migration
      */
     public function down()
     {
-        Schema::dropIfExists('my_media');
+        Schema::dropIfExists('my_media_group');
     }
 };

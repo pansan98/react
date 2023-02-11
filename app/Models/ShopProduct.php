@@ -12,6 +12,6 @@ class ShopProducts extends Model
 
     protected $table = 'shop_products';
     protected $fillable = [
-        'user_id', 'name', 'price', 'description', 'benefits', 'benefits_start', 'benefits_end', 'inventoly', 'max_purchase', 'fasted_delivery_day', 'customs'
+        'user_id', 'media_group_id', 'name', 'price', 'description', 'status', 'benefits', 'benefits_start', 'benefits_end', 'inventoly', 'max_purchase', 'fasted_delivery_day', 'customs'
     ];
 }

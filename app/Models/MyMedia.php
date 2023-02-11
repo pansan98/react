@@ -11,6 +11,6 @@ class MyMedia extends Model
 	use HasFactory, Common;
 
 	protected $table = 'my_media';
-	protected $fillable = ['mime', 'type', 'ext', 'path', 'name', 'identify_code'];
-	protected $hidden = ['id'];
+	protected $fillable = ['mime', 'type', 'ext', 'path', 'name', 'identify_code', 'media_group_id'];
+	protected $hidden = [];
 }
