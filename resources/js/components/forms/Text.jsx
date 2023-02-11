@@ -14,6 +14,8 @@ class Text extends React.Component {
 					className="form-control"
 					name={this.props.formName}
 					value={this.props.value}
+					placeholder={this.props.placeholder}
+					readOnly={this.props.readOnly}
 					onChange={(e) => this.props.onChange(this.props.formName, e.currentTarget.value)}
 				/>
 			</div>
@@ -22,7 +24,9 @@ class Text extends React.Component {
 }
 
 Text.defaultProps = {
-	type: 'text'
+	type: 'text',
+	placeholder: '',
+	readOnly: false
 }
 
 export default Text;

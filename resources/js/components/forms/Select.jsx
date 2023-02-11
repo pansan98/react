@@ -8,15 +8,34 @@ class Select extends React.Component {
 	render() {
 		return (
 			<div className="form-group">
-				<label>Select</label>
-				<select className="custom-select form-control">
-					<option>V1</option>
-					<option>v2</option>
-					<option>v3</option>
+				<label>{this.props.label}</label>
+				<select className="custom-select form-control" onChange={(e) => this.props.onChange(this.props.formName, e.currentTarget.value)}>
+					{this.props.values.map((v, k) => {
+						return (<option key={k} value={v.value}>{v.label}</option>)
+					})}
 				</select>
 			</div>
 		)
 	}
+}
+
+Select.defaultProps = {
+	label: 'Select',
+	value: 0,
+	values: [
+		{
+			label: 'V1',
+			value: 1
+		},
+		{
+			label: 'V2',
+			value: 2
+		},
+		{
+			label: 'V3',
+			value: 3
+		}
+	]
 }
 
 export default Select;
