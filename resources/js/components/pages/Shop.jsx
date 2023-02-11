@@ -115,9 +115,7 @@ class Shop extends React.Component {
 												<div className="inventoly-status"><span className="badge badge-success">在庫あり</span></div>
 											</td>
 											<td className="project-actions text-center">
-												<button className="btn btn-primary btn-sm">
-													View
-												</button>
+												<Link to={`/shop/views/${v.identify_code}`} className="btn btn-primary btn-sm">View</Link>
 												<button className="btn btn-warning btn-sm ml-1">
 													Page
 												</button>

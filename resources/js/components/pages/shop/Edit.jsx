@@ -56,7 +56,6 @@ class Edit extends React.Component {
 	}
 
 	componentDidMount() {
-
 		this.setState({identify_code: this.props.code})
 		if(this.props.code !== '') {
 			axios.get('/api/shop/product/' + this.props.code, {
@@ -98,6 +97,7 @@ class Edit extends React.Component {
 		await axios.post(endpoint, {
 			name: this.state.name,
 			price: this.state.price,
+			thumbnails: this.state.thumbnails,
 			identify_code: this.state.identify_code,
 			description: this.state.description,
 			benefits: this.state.benefits,
@@ -156,6 +156,7 @@ class Edit extends React.Component {
 									onChange={(name, value) => this.handlerChange(name, value)}
 								/>
 								<Error error={this.state.errors.price}/>
+								// TODO 保存済み画像の表示
 								<Uploader
 									label="イメージ画像"
 									formName="thumbnails"

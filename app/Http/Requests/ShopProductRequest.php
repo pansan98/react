@@ -39,4 +39,27 @@ class ShopProductRequest extends Myrequest
 			'inventoly' => '在庫数'
 		];
 	}
+
+	public function withValidator(\Illuminate\Validation\Validator $validator)
+	{
+		$validator->after(function(Validator $validator) {
+			// TODO 識別コードの重複厳守
+			if(!$this->get('thumbnails')) {
+				return;
+			}
+
+			$thumbnails = $this->get('thumbnails');
+			if(!is_array($thumbnails)) {
+				$validator->errors()->add('thumbnails', '正しいファイル情報ではないようです。');
+			} else {
+				if(!empty($thumbnails)) {
+					foreach ($thumbnails as $t_key => $thumbnail) {
+						if(empty($thumbnail['identify_code'])) {
+							$validator->errors()->add('thumbnails', ($t_key +1) . 'つめは識別できないファイルです。');
+						}
+					}
+				}
+			}
+		});
+	}
 }

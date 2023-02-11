@@ -59,9 +59,17 @@ class ShopProductController extends Controller
 				if(empty($params['identify_code'])) {
 					$params['identify_code'] = ShopProducts::identify_code();
 				}
+				if(!empty($params['thumbnails'])) {
+					/** @var \App\Providers\MediaServiceProvider $media_service */
+					$media_service = app(\App\Providers\MediaServiceProvider::class);
+					$media_group = $media_service->save($params['thumbnails']);
+					if($media_group) {
+						$params['media_group_id'] = $media_group->id;
+					}
+				}
 				$product->fill($params)->save();
 				return true;
-			});
+			}); 
 			if($ret) {
 				return $this->success();
 			}
@@ -81,6 +89,7 @@ class ShopProductController extends Controller
 					->where('deleted_at', null)
 					->first();
 				if($product) {
+					// TODO MediaGroup内の差分処理
 					$product->fill($params)->save();
 				}
 				return true;

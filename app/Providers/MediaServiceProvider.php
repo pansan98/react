@@ -4,6 +4,7 @@ namespace App\Providers;
 
 use Illuminate\Support\ServiceProvider;
 use App\Models\MyMedia;
+use App\Models\MyMediaGroup;
 use Illuminate\Contracts\Foundation\Application;
 use Illuminate\Support\Facades\Log;
 
@@ -49,12 +50,12 @@ class MediaServiceProvider extends ServiceProvider
 		return $this;
 	}
 
-	public function save($thumbnails)
+	public function save($thumbnails, $media_group_id = null)
 	{
 		if(!empty($thumbnails)) {
 			$keys = array_keys($thumbnails);
 			if(isset($keys[0]) && is_numeric($keys[0])) {
-				return $this->multiple($thumbnails);
+				return $this->multiple($thumbnails, $media_group_id);
 			} else {
 				return $this->single($thumbnails);
 			}
@@ -63,11 +64,41 @@ class MediaServiceProvider extends ServiceProvider
 		return null;
 	}
 
-	protected function multiple($thumbnails)
+	/**
+	 * @param [type] $thumbnails
+	 * @param [type] $media_group_id
+	 * @return MyMediaGroup
+	 */
+	protected function multiple($thumbnails, $media_group_id)
 	{
-
+		if($media_group_id) {
+			$media_group = MyMediaGroup::where('id', $media_group_id)->first();
+		} else {
+			$media_group = new MyMediaGroup();
+			$media_group->save();
+		}
+		foreach ($thumbnails as $thumbnail) {
+			$params = [];
+			$params = [
+				'identify_code' => $thumbnail['identify_code'],
+				'name' => $thumbnail['name'],
+				'size' => $thumbnail['size'],
+				'type' => $thumbnail['type'],
+				'path' => $thumbnail['value'],
+				'ext' => $this->extension($thumbnail['name']),
+				'mime' => $this->mime_for_ext($this->extension($thumbnail['name'])),
+				'media_group_id' => $media_group->id
+			];
+			$media = new MyMedia();
+			$media->fill($params)->save();
+		}
+		return $media_group;
 	}
 
+	/**
+	 * @param [type] $thumbnail
+	 * @return MyMedia
+	 */
 	protected function single($thumbnail)
 	{
 		$params = [
