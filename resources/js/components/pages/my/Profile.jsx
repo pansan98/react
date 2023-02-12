@@ -41,12 +41,17 @@ class Profile extends React.Component {
 		if(!this.props.user) {
 			this.fetch();
 		} else {
+			const thumbnails = [];
+			if(this.props.user.thumbnail) {
+				thumbnails.push(this.props.user.thumbnail);
+			}
 			this.setState({
 				user: this.props.user,
 				f_name: this.props.user.name,
 				f_email: this.props.user.email,
 				f_profession: this.props.user.profession,
-				f_gender: this.props.user.gender
+				f_gender: this.props.user.gender,
+				f_thumbnail: thumbnails
 			});
 		}
 
@@ -84,12 +89,17 @@ class Profile extends React.Component {
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
+				const thumbnails = [];
+				if(res.data.user.thumbnail) {
+					thumbnails.push(res.data.user.thumbnail);
+				}
 				this.setState({
 					user: res.data.user,
 					f_name: res.data.user.name,
 					f_email: res.data.user.email,
 					f_profession: res.data.user.profession,
-					f_gender: res.data.user.gender
+					f_gender: res.data.user.gender,
+					f_thumbnail: thumbnails
 				})
 			}
 		}).catch((e) => {
@@ -227,7 +237,7 @@ class Profile extends React.Component {
 										label="画像"
 										formName="f_thumbnail"
 										message="画像をアップロード"
-										value={this.state.f_thumbnail}
+										values={this.state.f_thumbnail}
 										onChange={(name, value) => this.handlerChange(name, value)}
 									/>
 									<Error error={this.state.errors.thumbnail}/>

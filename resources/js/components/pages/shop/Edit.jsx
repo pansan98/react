@@ -165,7 +165,7 @@ class Edit extends React.Component {
 									label="イメージ画像"
 									formName="thumbnails"
 									message="画像をアップロード"
-									value={this.state.thumbnails}
+									values={this.state.thumbnails}
 									maxFile="5"
 									multiple={true}
 									onChange={(name, value) => this.handlerChange(name, value)}
