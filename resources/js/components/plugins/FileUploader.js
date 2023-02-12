@@ -49,8 +49,8 @@ class FileUploader {
 					const done = this.done.bind(this);
 					this.files.map((file) => {
 						const reader = new FileReader();
-						const uniq = new Date().getTime();
 						reader.onload = () => {
+							const uniq = new Date().getTime();
 							const src = reader.result;
 							this.config.files.push({
 								path: URL.createObjectURL(file),

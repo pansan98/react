@@ -111,6 +111,11 @@ class ShopProductController extends Controller
 					->where('deleted_at', null)
 					->first();
 				if(!empty($product)) {
+					if($product->media_group_id) {
+						/** @var \App\Providers\MediaServiceProvider $media_service */
+						$media_service = app(\App\Providers\MediaServiceProvider::class);
+						$media_service->multiple_destroy($product->media_group_id);
+					}
 					$product->delete();
 				}
 				return true;

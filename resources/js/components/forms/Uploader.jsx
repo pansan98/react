@@ -18,6 +18,8 @@ class Uploader extends React.Component {
 
 	componentDidMount() {
 		this.uploader = new FileUploader({
+			max_file: this.props.maxFile,
+			multiple: this.props.multiple,
 			callbacks: {
 				uploaded_fn: () => {
 					this.onUploaded()
@@ -56,6 +58,7 @@ class Uploader extends React.Component {
 
 	onUploaded() {
 		const files = this.uploader.flush();
+		console.log(files);
 		this.setState({
 			uploaded: true,
 			files: files
@@ -68,7 +71,7 @@ class Uploader extends React.Component {
 		this.uploader.trash(identify);
 		const files = this.uploader.flush();
 		this.setState({
-			uploaded: (files.length),
+			uploaded: (files.length > 0 ? true : false),
 			files: files
 		})
 		this.props.onChange(this.props.formName, files);
@@ -76,55 +79,62 @@ class Uploader extends React.Component {
 
 	// アップロード描画
 	upload_content() {
-		return (
-			<div id={this.props.action} className="row">
-				<div
-					id={this.props.dropzone}
-					className={`col-12 align-items-center dropzone ${this.state.classes.dragover}`}
-					onDragOver={(e) => this.onDragover(e)}
-					onDragLeave={(e) => this.onDragleave(e)}
-					onDrop={(e) => this.onDrop(e)}
-				>
-					<div className="col-12 d-flex align-items-center">
-						<span className="message">{this.props.message}</span>
+		if(!this.state.uploaded || this.state.files.length < this.props.maxFile) {
+			return (
+				<div id={this.props.action} className="row">
+					<div
+						id={this.props.dropzone}
+						className={`col-12 align-items-center dropzone ${this.state.classes.dragover}`}
+						onDragOver={(e) => this.onDragover(e)}
+						onDragLeave={(e) => this.onDragleave(e)}
+						onDrop={(e) => this.onDrop(e)}
+					>
+						<div className="col-12 d-flex align-items-center">
+							<span className="message">{this.props.message}</span>
+						</div>
 					</div>
 				</div>
-			</div>
-		)
+			)
+		}
+		return (<div></div>)
 	}
 
 	// プレビュー描画
 	preview_content() {
-		return (
-			<div id={this.props.uploaded} className="table table-striped files uploader-preview">
-				{this.state.files.map((v, k) => {
-					if(v.type === 'image') {
-						return (
-							<div key={k} className="row mt-2">
-								<div className="col-auto d-flex align-items-center">
-									<span key={`span-${k}`} className="preview">
-									<img key={`img-${k}`} src={v.path} className="img"/>
-								</span>
-								</div>
-								<div className="col-2 d-flex align-items-center">
-									<div className="btn-group">
-										<button key={`cancel-${k}`} className="btn btn-warning cancel" onClick={(e) => this.onCancel(e, v.identify_code)}>Cancel</button>
+		if(this.state.uploaded) {
+			return (
+				<div id={this.props.uploaded} className="d-flex files uploader-preview">
+					{this.state.files.map((v, k) => {
+						if(v.type === 'image') {
+							return (
+								<div key={k} className="col-2 mt-2">
+									<div className="col-auto d-flex align-items-center">
+										<span key={`span-${k}`} className="preview">
+										<img key={`img-${k}`} src={v.path} className="img"/>
+									</span>
+									</div>
+									<div className="mt-1">
+										<div className="btn-group">
+											<button key={`cancel-${k}`} className="btn btn-warning cancel" onClick={(e) => this.onCancel(e, v.identify_code)}>Cancel</button>
+										</div>
 									</div>
 								</div>
-							</div>
-						)
-					}
-				})}
-			</div>
-		)
+							)
+						}
+					})}
+				</div>
+			)
+		}
+		return (<div></div>)
 	}
 
 	contents() {
-		if(this.state.uploaded) {
-			return this.preview_content();
-		} else {
-			return this.upload_content();
-		}
+		return (
+			<div>
+				{this.upload_content()}
+				{this.preview_content()}
+			</div>
+		)
 	}
 
 	render() {
@@ -145,7 +155,9 @@ Uploader.defaultProps = {
 	dropzone: 'upload-dropzoen',
 	uploaded: 'uploaded',
 	message: 'ファイルをアップロード',
-	value: {}
+	values: [],
+	maxFile: 1,
+	multiple: false
 }
 
 export default Uploader;

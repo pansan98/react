@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Models\MyMedia;
 use App\Models\MyMediaGroup;
 use Illuminate\Contracts\Foundation\Application;
+use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
 
 class MediaServiceProvider extends ServiceProvider
@@ -69,7 +70,7 @@ class MediaServiceProvider extends ServiceProvider
 	 * @param [type] $media_group_id
 	 * @return MyMediaGroup
 	 */
-	protected function multiple($thumbnails, $media_group_id)
+	protected function multiple($thumbnails, $media_group_id = null)
 	{
 		if($media_group_id) {
 			$media_group = MyMediaGroup::where('id', $media_group_id)->first();
@@ -77,21 +78,25 @@ class MediaServiceProvider extends ServiceProvider
 			$media_group = new MyMediaGroup();
 			$media_group->save();
 		}
-		foreach ($thumbnails as $thumbnail) {
-			$params = [];
-			$params = [
-				'identify_code' => $thumbnail['identify_code'],
-				'name' => $thumbnail['name'],
-				'size' => $thumbnail['size'],
-				'type' => $thumbnail['type'],
-				'path' => $thumbnail['value'],
-				'ext' => $this->extension($thumbnail['name']),
-				'mime' => $this->mime_for_ext($this->extension($thumbnail['name'])),
-				'media_group_id' => $media_group->id
-			];
-			$media = new MyMedia();
-			$media->fill($params)->save();
-		}
+		$ret = DB::transaction(function() use ($thumbnails, $media_group) {
+			foreach ($thumbnails as $thumbnail) {
+				$params = [];
+				$params = [
+					'identify_code' => $thumbnail['identify_code'],
+					'name' => $thumbnail['name'],
+					'size' => $thumbnail['size'],
+					'type' => $thumbnail['type'],
+					'path' => $thumbnail['value'],
+					'ext' => $this->extension($thumbnail['name']),
+					'mime' => $this->mime_for_ext($this->extension($thumbnail['name'])),
+					'media_group_id' => $media_group->id
+				];
+				$media = new MyMedia();
+				$media->fill($params)->save();
+			}
+
+			return true;
+		});
 		return $media_group;
 	}
 
@@ -101,18 +106,22 @@ class MediaServiceProvider extends ServiceProvider
 	 */
 	protected function single($thumbnail)
 	{
-		$params = [
-			'identify_code' => $thumbnail['identify_code'],
-			'name' => $thumbnail['name'],
-			'size' => $thumbnail['size'],
-			'type' => $thumbnail['type'],
-			'path' => $thumbnail['value'],
-			'ext' => $this->extension($thumbnail['name']),
-			'mime' => $this->mime_for_ext($this->extension($thumbnail['name']))
-		];
+		$media = DB::transaction(function() use ($thumbnail) {
+			$params = [
+				'identify_code' => $thumbnail['identify_code'],
+				'name' => $thumbnail['name'],
+				'size' => $thumbnail['size'],
+				'type' => $thumbnail['type'],
+				'path' => $thumbnail['value'],
+				'ext' => $this->extension($thumbnail['name']),
+				'mime' => $this->mime_for_ext($this->extension($thumbnail['name']))
+			];
+			
+			$media = new MyMedia();
+			$media->fill($params)->save();
+			return $media;
+		});
 
-		$media = new MyMedia();
-		$media->fill($params)->save();
 		return $media;
 	}
 
@@ -172,6 +181,14 @@ class MediaServiceProvider extends ServiceProvider
 		$media = MyMedia::where('id', $id)->first();
 		if($media) {
 			$media->delete();
+		}
+	}
+
+	public function multiple_destroy($id)
+	{
+		$media_group = MyMediaGroup::where('id', $id)->first();
+		if($media_group) {
+			$media_group->delete();
 		}
 	}
 }
