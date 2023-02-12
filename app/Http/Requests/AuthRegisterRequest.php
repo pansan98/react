@@ -30,7 +30,7 @@ class AuthRegisterRequest extends MyRequest
 		return [
 			'login_id' => 'Login ID',
 			'password' => 'Password',
-			'password_confirmation' => 'Password Try',
+			'password_confirmation' => 'Password ReTry',
 			'email' => 'Email'
 		];
 	}

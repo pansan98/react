@@ -73,7 +73,7 @@ class Shop extends React.Component {
 				<Loader is_loading={this.state.loading}/>
 				<div className="card">
 					<div className="card-body">
-						<div className="search-form d-flex mt-2 p-1">
+						<div className="search-form d-flex">
 							<Search
 								value={this.state.search}
 								formName="search"

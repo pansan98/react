@@ -126,11 +126,15 @@ class Edit extends React.Component {
 				<div className="row">
 					<Loader is_loading={this.state.loading}/>
 					<div className="col-12">
-						<div className="card p-3">
-							<div className="d-flex">
-								<Link to="/shop" className="btn btn-default">戻る</Link>
-								<button className="btn btn-primary ml-auto" onClick={(e) => this.save(e)}>{this.props.page}</button>
+						<div className="card">
+							<div className="card-body">
+								<div className="d-flex">
+									<Link to="/shop" className="btn btn-default">戻る</Link>
+									<button className="btn btn-primary ml-auto" onClick={(e) => this.save(e)}>{this.props.page}</button>
+								</div>
 							</div>
+						</div>
+						<div className="card p-3">
 							<div className="card-body">
 								<Text
 									label="商品名"
@@ -211,7 +215,12 @@ class Edit extends React.Component {
 		} else {
 			return (
 				<div className="card">
-					<p className="text-center">保存しました。</p>
+					<div className="card-body">
+						<div className="d-flex">
+							<Link to="/shop" className="btn btn-default">戻る</Link>
+						</div>
+						<p className="text-center">保存しました。</p>
+					</div>
 				</div>
 			)
 		}

@@ -1,4 +1,5 @@
 import React from 'react';
+import {Link} from 'react-router-dom';
 
 import Base from '../Base';
 
@@ -21,6 +22,13 @@ class Views extends React.Component {
 		return (
 			<div className="row">
 				<div className="col-12">
+					<div className="card">
+						<div className="card-body">
+							<div className="d-flex">
+								<Link to="/shop" className="btn btn-default">戻る</Link>
+							</div>
+						</div>
+					</div>
 					<div className="card card-primary card-tabs">
 						<div className="card-header p-0 pt-1">
 							<ul className="nav nav-tabs">
