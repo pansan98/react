@@ -12,6 +12,7 @@ class Ec extends React.Component {
 			cart: {
 				products: []
 			},
+			favorites: [],
 			loading: false
 		}
 	}
@@ -29,7 +30,8 @@ class Ec extends React.Component {
 					products: res.data.products,
 					cart: {
 						products: res.data.cart.products
-					}
+					},
+					favorites: res.data.favorites
 				});
 			}
 		}).catch((e) => {
@@ -75,6 +77,36 @@ class Ec extends React.Component {
 		})
 	}
 
+	async addFavorite(e, identify) {
+		this.setState({loading: true});
+		await axios.post('/api/shop/favorite/add/' + identify, {
+			credentials: 'same-origin'
+		}).then((res) => {
+			if(res.data.result) {
+				this.setState({favorites: res.data.favorites});
+			}
+		}).catch((e) => {
+			console.log(e)
+		}).finally(() => {
+			this.setState({loading: false});
+		})
+	}
+
+	async removeFavorite(e, identify) {
+		this.setState({loading: true});
+		await axios.post('/api/shop/favorite/remove/' + identify, {
+			credentials: 'same-origin'
+		}).then((res) => {
+			if(res.data.result) {
+				this.setState({favorites: res.data.favorites});
+			}
+		}).catch((e) => {
+			console.log(e);
+		}).finally(() => {
+			this.setState({loading: false});
+		})
+	}
+
 	contents() {
 		return (
 			<div className="card card-list">
@@ -109,20 +141,32 @@ class Ec extends React.Component {
 												</div>
 												<div className="col-5 text-center">
 													{product.thumbnails.map((thumbnail, t_k) => {
-														return (
-															<img key={t_k} src={thumbnail.path} alt={thumbnail.name} className="img-circle-img-fluid" width="100"/>
-														)
+														if(t_k === 0) {
+															return (
+																<img key={t_k} src={thumbnail.path} alt={thumbnail.name} className="img-circle-img-fluid" width="100"/>
+															)
+														}
 													})}
 												</div>
 											</div>
 										</div>
 										<div className="card-footer">
 											<div className="d-flex">
-												<button
-												className="btn btn-outline-danger"
-												>
-													Favo
-												</button>
+												{(this.state.favorites.includes(product.identify_code)) ?
+													<button
+													className="btn btn-danger"
+													onClick={(e) => this.removeFavorite(e, product.identify_code)}
+													>
+														Un Favo
+													</button>
+												:
+													<button
+													className="btn btn-outline-danger"
+													onClick={(e) => this.addFavorite(e, product.identify_code)}
+													>
+														Favo
+													</button>
+												}
 												{(this.state.cart.products.includes(product.identify_code)) ?
 													<button
 													className="btn btn-default ml-1"

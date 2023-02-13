@@ -29,7 +29,15 @@ class ShopEcProductController extends Controller
 				$identifies = $provider->product_identifies($cart);
 			}
 
-			return $this->success(['products' => $products, 'cart' => ['products' => $identifies]]);
+			/** @var \App\Providers\ShopFavoritesProvider $f_provider */
+			$f_provider = app(\App\Providers\ShopFavoritesProvider::class);
+			$favorites = $f_provider->favorites($user);
+
+			return $this->success([
+				'products' => $products,
+				'cart' => ['products' => $identifies],
+				'favorites' => $favorites
+			]);
 		}
 
 		return $this->failed();

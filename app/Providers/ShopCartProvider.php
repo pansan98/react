@@ -96,19 +96,18 @@ class ShopCartProvider extends ServiceProvider
 
 	public function product_identifies(ShopCarts $cart)
 	{
-		$identifies = [];
+		$carts = [];
 		$products = ShopProducts::select('identify_code')
 			->join('shop_carts_products', function($join) use ($cart) {
 				$join->on('shop_products.id', '=', 'shop_carts_products.product_id')
 					->where('shop_carts_products.cart_id', '=', $cart->id);
 			})
 			->distinct()
-			->get()
-			->toArray();
+			->get();
 		
 		foreach ($products as $product) {
-			$identifies[] = $product['identify_code'];
+			$carts[] = $product->identify_code;
 		}
-		return $identifies;
+		return $carts;
 	}
 }
