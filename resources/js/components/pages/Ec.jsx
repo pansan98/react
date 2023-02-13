@@ -8,7 +8,11 @@ class Ec extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
-			products: []
+			products: [],
+			cart: {
+				products: []
+			},
+			loading: false
 		}
 	}
 
@@ -18,19 +22,63 @@ class Ec extends React.Component {
 
 	async fecth() {
 		await axios.get('/api/shop/ec/products', {
-			credentials: 'sme-origin'
+			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
-				this.setState({products: res.data.products});
+				this.setState({
+					products: res.data.products,
+					cart: {
+						products: res.data.cart.products
+					}
+				});
 			}
 		}).catch((e) => {
 			console.log(e);
 		})
 	}
 
+	async addCart(e, identify) {
+		this.setState({loading: true});
+		await axios.post('/api/shop/cart/add/' + identify, {
+			credentials: 'same-origin'
+		}).then((res) => {
+			if(res.data.result) {
+				this.setState({
+					cart: {
+						products: res.data.products
+					}
+				})
+			}
+		}).catch((e) => {
+			console.log(e);
+		}).finally(() => {
+			this.setState({loading: false});
+		})
+	}
+
+	async removeCart(e, identify) {
+		this.setState({loading: true});
+		await axios.post('/api/shop/cart/remove/' + identify, {
+			credentials: 'same-origin'
+		}).then((res) => {
+			if(res.data.result) {
+				this.setState({
+					cart: {
+						products: res.data.products
+					}
+				})
+			}
+		}).catch((e) => {
+			console.log(e);
+		}).finally(() => {
+			this.setState({loading: false});
+		})
+	}
+
 	contents() {
 		return (
 			<div className="card card-list">
+				<Loader is_loading={this.state.loading} />
 				<div className="card-body pb-0">
 					<div className="row">
 						{this.state.products.map((product, k) => {
@@ -75,11 +123,21 @@ class Ec extends React.Component {
 												>
 													Favo
 												</button>
-												<button
-												className="btn btn-default ml-1"
-												>
-													カートに追加
-												</button>
+												{(this.state.cart.products.includes(product.identify_code)) ?
+													<button
+													className="btn btn-default ml-1"
+													onClick={(e) => this.removeCart(e, product.identify_code)}
+													>
+														カートから削除
+													</button>
+												:
+													<button
+													className="btn btn-default ml-1"
+													onClick={(e) => this.addCart(e, product.identify_code)}
+													>
+														カートに追加
+													</button>
+												}
 												<Link to={`/ec/product/${product.identify_code}`} className="btn btn-primary ml-auto">View</Link>
 											</div>
 										</div>

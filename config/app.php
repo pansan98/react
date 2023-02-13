@@ -195,7 +195,9 @@ return [
         App\Providers\EventServiceProvider::class,
         App\Providers\RouteServiceProvider::class,
         App\Providers\MyAuthServiceProvider::class,
-        App\Providers\MediaServiceProvider::class
+        App\Providers\MediaServiceProvider::class,
+        App\Providers\ShopCartProvider::class,
+        App\Providers\ShopFavoritesProvider::class
     ],
 
     /*

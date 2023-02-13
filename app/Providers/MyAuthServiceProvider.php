@@ -39,7 +39,7 @@ class MyAuthServiceProvider extends ServiceProvider
 		if(empty($this->user)) {
 			$identify = session()->get('identify', null);
 			if(!empty($identify)) {
-				$this->user = MyUser::with(['thumbnail'])->where('identify_code', $identify)
+				$this->user = MyUser::with(['thumbnail', 'favorites'])->where('identify_code', $identify)
 					->where('delete_flag', 0)
 					->whereNot('active_sharing_id')
 					->first();

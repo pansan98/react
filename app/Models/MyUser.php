@@ -41,6 +41,11 @@ class MyUser extends Model
 		return $this->hasOne(\App\Models\MyMedia::class, 'id', 'thumbnail_id');
 	}
 
+	public function favorites()
+	{
+		return $this->belongsToMany(\App\Models\ShopProducts::class, 'shop_favorites', 'user_id', 'id', 'product_id', 'id');
+	}
+
 	public static function labels($label)
 	{
 		$labels = [];
