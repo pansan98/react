@@ -16,6 +16,7 @@ class Edit extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
+			id: '',
 			name: '',
 			price: '',
 			thumbnails: [],
@@ -63,6 +64,7 @@ class Edit extends React.Component {
 			}).then((res) => {
 				if(res.data.result) {
 					this.setState({
+						id: res.data.product.id,
 						name: res.data.product.name,
 						price: res.data.product.price,
 						description: res.data.product.description,
@@ -70,7 +72,8 @@ class Edit extends React.Component {
 						inventoly: res.data.product.inventoly,
 						inventoly_danger: res.data.product.inventoly_danger,
 						max_purchase: res.data.product.max_purchase,
-						fasted_delivery_day: res.data.product.fasted_delivery_day
+						fasted_delivery_day: res.data.product.fasted_delivery_day,
+						thumbnails: res.data.product.thumbnails
 					})
 				}
 			}).catch((e) => {
@@ -95,6 +98,7 @@ class Edit extends React.Component {
 			endpoint = '/api/shop/create';
 		}
 		await axios.post(endpoint, {
+			id: this.state.id,
 			name: this.state.name,
 			price: this.state.price,
 			thumbnails: this.state.thumbnails,
@@ -160,7 +164,6 @@ class Edit extends React.Component {
 									onChange={(name, value) => this.handlerChange(name, value)}
 								/>
 								<Error error={this.state.errors.price}/>
-								// TODO 保存済み画像の表示
 								<Uploader
 									label="イメージ画像"
 									formName="thumbnails"
@@ -170,6 +173,7 @@ class Edit extends React.Component {
 									multiple={true}
 									onChange={(name, value) => this.handlerChange(name, value)}
 								/>
+								<Error error={this.state.errors.thumbnails}/>
 								<Textarea
 									label="商品説明欄"
 									formName="description"

@@ -35,7 +35,8 @@ class ShopProductController extends Controller
 	{
 		$user = $this->myauth_provider->get();
 		if(!empty($user)) {
-			$product = ShopProducts::where('user_id', $user->id)
+			$product = ShopProducts::with(['thumbnails'])
+				->where('user_id', $user->id)
 				->where('identify_code', $identify)
 				->where('deleted_at', null)
 				->first();
@@ -82,14 +83,23 @@ class ShopProductController extends Controller
 	{
 		$params = $request->request->all();
 		$user = $this->myauth_provider->get();
-		if(!empty($user)) {
-			$ret = DB::transaction(function() use ($params, $user, $identify) {
+		$id = $params['id'];
+		if(!empty($user) && $id) {
+			$ret = DB::transaction(function() use ($params, $user, $identify, $id) {
 				$product = ShopProducts::where('user_id', $user->id)
 					->where('identify_code', $identify)
+					->where('id', $id)
 					->where('deleted_at', null)
 					->first();
 				if($product) {
-					// TODO MediaGroup内の差分処理
+					if(!empty($params['thumbnails'])) {
+						/** @var \App\Providers\MediaServiceProvider $media_service */
+						$media_service = app(\App\Providers\MediaServiceProvider::class);
+						$media_group = $media_service->diff($params['thumbnails'], $product->media_group_id);
+						$params['media_group_id'] = $media_group->id;
+					} else {
+						$params['media_group_id'] = null;
+					}
 					$product->fill($params)->save();
 				}
 				return true;

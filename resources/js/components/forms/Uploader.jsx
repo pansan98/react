@@ -7,17 +7,13 @@ class Uploader extends React.Component {
 	constructor(props) {
 		super(props)
 		this.state = {
-			uploaded: false,
 			classes: {
 				dragover: ''
-			},
-			files: []
+			}
 		}
-		this.uploader;
-	}
 
-	componentDidMount() {
 		this.uploader = new FileUploader({
+			files: this.props.values,
 			max_file: this.props.maxFile,
 			multiple: this.props.multiple,
 			callbacks: {
@@ -58,11 +54,6 @@ class Uploader extends React.Component {
 
 	onUploaded() {
 		const files = this.uploader.flush();
-		console.log(files);
-		this.setState({
-			uploaded: true,
-			files: files
-		});
 		this.props.onChange(this.props.formName, files);
 		this.uploader.roger();
 	}
@@ -70,16 +61,12 @@ class Uploader extends React.Component {
 	onCancel(e, identify) {
 		this.uploader.trash(identify);
 		const files = this.uploader.flush();
-		this.setState({
-			uploaded: (files.length > 0 ? true : false),
-			files: files
-		})
 		this.props.onChange(this.props.formName, files);
 	}
 
 	// アップロード描画
 	upload_content() {
-		if(!this.state.uploaded || this.state.files.length < this.props.maxFile) {
+		if(!this.props.values.length || this.props.values.length < this.props.maxFile) {
 			return (
 				<div id={this.props.action} className="row">
 					<div
@@ -101,10 +88,10 @@ class Uploader extends React.Component {
 
 	// プレビュー描画
 	preview_content() {
-		if(this.state.uploaded) {
+		if(this.props.values.length) {
 			return (
 				<div id={this.props.uploaded} className="d-flex files uploader-preview">
-					{this.state.files.map((v, k) => {
+					{this.props.values.map((v, k) => {
 						if(v.type === 'image') {
 							return (
 								<div key={k} className="col-2 mt-2">
@@ -138,6 +125,11 @@ class Uploader extends React.Component {
 	}
 
 	render() {
+		if(this.props.values.length && !this.uploader.config.files.length) {
+			// Uploader側にfileを持たせる
+			this.uploader.config.files = this.props.values;
+		}
+
 		return (
 			<div className="form-group">
 				<label>{this.props.label}</label>

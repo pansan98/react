@@ -11,6 +11,8 @@ import Shop from './pages/Shop';
 import ShopCreate from './pages/shop/Edit';
 import ShopEdit from './pages/shop/ParamsEdit';
 import ShopViews from './pages/shop/ParamsViews';
+import Ec from './pages/Ec';
+import EcDetail from './pages/ec/ParamsDetail';
 
 // Auth
 import Login from './auth/Login';
@@ -32,6 +34,8 @@ class App extends React.Component {
 						<Route path="/shop/create" element={<ShopCreate page="追加"/>} />
 						<Route path="/shop/edit/:code" element={<ShopEdit />} />
 						<Route path="/shop/views/:code" element={<ShopViews />} />
+						<Route path="/ec" element={<Ec />} />
+						<Route path="/ec/product/:code" element={<EcDetail />} />
 						<Route path="/my/profile" element={<MyProfile />} />
 						<Route path="/practice/stop-watch" element={<StopWatch />} />
 						<Route path="/auth/login" element={<Login />} />

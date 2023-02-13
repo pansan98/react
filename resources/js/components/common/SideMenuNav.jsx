@@ -28,6 +28,12 @@ class SideMenuNav extends React.Component {
 							<p>Shop</p>
 						</Link>
 					</li>
+					<li className="nav-item">
+						<Link to="/ec" className="nav-link">
+							<i className="nav-icon far fa-image"></i>
+							<p>EC</p>
+						</Link>
+					</li>
 				</ul>
 			</nav>
 		)

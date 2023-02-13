@@ -49,4 +49,9 @@ Route::prefix('shop')->as('shop')->group(function() {
 	Route::post('/product/destroy/{identify}', [\App\Http\Controllers\Api\ShopProductController::class, 'destroy'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
 	Route::post('/create', [\App\Http\Controllers\Api\ShopProductController::class, 'create']);
 	Route::post('/edit/{identify}', [\App\Http\Controllers\Api\ShopProductController::class, 'edit'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
+
+	Route::prefix('ec')->as('ec')->group(function() {
+		Route::get('/products', [\App\Http\Controllers\Api\ShopEcProductController::class, 'products']);
+		Route::get('/product/{identify}', [\App\Http\Controllers\Api\ShopEcProductController::class, 'product'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
+	});
 });

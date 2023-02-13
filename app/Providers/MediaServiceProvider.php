@@ -65,6 +65,53 @@ class MediaServiceProvider extends ServiceProvider
 		return null;
 	}
 
+	public function diff($thumbnails, $media_group_id = null)
+	{
+		if($media_group_id) {
+			$media_group = MyMediaGroup::with(['thumbnails'])->where('id', $media_group_id)->first();
+			$identyfies = [];
+			foreach ($media_group->thumbnails as $m_thumbnail) {
+				$identyfies[] = $m_thumbnail->identify_code;
+			}
+			if(!empty($identyfies)) {
+				$storages = [];
+				foreach ($thumbnails as $thumbnail) {
+					if(!in_array($thumbnail['identify_code'], $identyfies)) {
+						// 新たに追加されたファイルを登録する
+						$ret = DB::transaction(function() use ($thumbnail, $media_group) {
+							$thumbnail['media_group_id'] = $media_group->id;
+							$media = $this->save($thumbnail);
+							return $media;
+						});
+					} else {
+						// すでに登録済みの識別コードを保持しておく
+						$storages[] = $thumbnail['identify_code'];
+					}
+				}
+
+				if(!empty($storages)) {
+					foreach ($identyfies as $identify) {
+						if(!in_array($identify, $storages)) {
+							// 削除された分のMediaのgroup_idを破棄
+							$ret = DB::transaction(function() use ($identify, $media_group) {
+								$media = MyMedia::where('identify_code', $identify)
+								->where('media_group_id', $media_group->id)
+								->first();
+								if($media) {
+									$media->fill(['media_group_id' => null])->save();
+								}
+							});
+						}
+					}
+				}
+			}
+		} else {
+			$media_group = $this->save($thumbnails, $media_group_id);
+		}
+
+		return $media_group;
+	}
+
 	/**
 	 * @param [type] $thumbnails
 	 * @param [type] $media_group_id
@@ -114,7 +161,8 @@ class MediaServiceProvider extends ServiceProvider
 				'type' => $thumbnail['type'],
 				'path' => $thumbnail['value'],
 				'ext' => $this->extension($thumbnail['name']),
-				'mime' => $this->mime_for_ext($this->extension($thumbnail['name']))
+				'mime' => $this->mime_for_ext($this->extension($thumbnail['name'])),
+				'media_group_id' => !empty($thumbnail['media_group_id']) ? $thumbnail['media_group_id'] : null
 			];
 			
 			$media = new MyMedia();
