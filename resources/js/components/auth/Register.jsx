@@ -118,7 +118,7 @@ class Register extends React.Component {
 						error={this.state.errors.email}
 					/>
 					<div className="col-4">
-						<button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.onSave(e)}>Sign in</button>
+						<button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.onSave(e)}>Register</button>
 					</div>
 					<p className="mb-0">
 						<Link to="/auth/login" className="text-center">Login</Link>
