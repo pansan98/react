@@ -1,21 +1,17 @@
 import React from 'react';
 import {Link} from 'react-router-dom';
 
-import Base from './Base';
-import Loader from '../common/Loader';
-import Search from '../forms/Search';
-import Buttons from './ec/parts/Buttons';
+import Base from '../Base';
+import Loader from '../../common/Loader';
+import Buttons from './parts/Buttons';
 
-class Ec extends React.Component {
+class Favorites extends React.Component {
 	constructor(props) {
 		super(props);
 		this.state = {
 			products: [],
-			cart: {
-				products: []
-			},
+			carts: [],
 			favorites: [],
-			search: '',
 			loading: false
 		}
 	}
@@ -25,20 +21,15 @@ class Ec extends React.Component {
 	}
 
 	async fetch(callback_fn) {
-		await axios.get('/api/shop/ec/products', {
-			params: {
-				search: this.state.search
-			},
+		await axios.get('/api/shop/favorite/favorites', {
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
 				this.setState({
 					products: res.data.products,
-					cart: {
-						products: res.data.cart.products
-					},
+					carts: res.data.carts,
 					favorites: res.data.favorites
-				});
+				})
 			}
 		}).catch((e) => {
 			console.log(e);
@@ -56,9 +47,7 @@ class Ec extends React.Component {
 		}).then((res) => {
 			if(res.data.result) {
 				this.setState({
-					cart: {
-						products: res.data.products
-					}
+					carts: res.data.products
 				})
 			}
 		}).catch((e) => {
@@ -75,9 +64,7 @@ class Ec extends React.Component {
 		}).then((res) => {
 			if(res.data.result) {
 				this.setState({
-					cart: {
-						products: res.data.products
-					}
+					carts: res.data.products
 				})
 			}
 		}).catch((e) => {
@@ -117,34 +104,15 @@ class Ec extends React.Component {
 		})
 	}
 
-	handlerSearch(name, value) {
-		const param = {};
-		param[name] = value;
-		this.setState(param);
-	}
-
-	async search(e) {
-		this.setState({loading: true});
-		await this.fetch(() => {
-			this.setState({loading: false});
-		})
-	}
-
 	contents() {
 		return (
 			<div>
 				<div className="card">
 					<div className="card-body">
-						<div className="search-form d-flex">
-							<Search
-								value={this.state.search}
-								formName="search"
-								onChange={(name, value) => this.handlerSearch(name, value)}
-								onSearch={(e) => this.search(e)}
-							/>
+						<div className="d-flex">
 							<div className="ml-auto">
 								<Buttons
-								cart={this.state.cart.products.length}
+								cart={this.state.carts.length}
 								favorites={this.state.favorites.length}
 								/>
 							</div>
@@ -152,7 +120,7 @@ class Ec extends React.Component {
 					</div>
 				</div>
 				<div className="card card-list">
-					<Loader is_loading={this.state.loading} />
+					<Loader is_loading={this.state.loading}/>
 					<div className="card-body pb-0">
 						<div className="row">
 							{this.state.products.map((product, k) => {
@@ -209,7 +177,7 @@ class Ec extends React.Component {
 															<i className="fas fa-heart"></i>
 														</button>
 													}
-													{(this.state.cart.products.includes(product.identify_code)) ?
+													{(this.state.carts.includes(product.identify_code)) ?
 														<button
 														className="btn btn-default ml-1"
 														onClick={(e) => this.removeCart(e, product.identify_code)}
@@ -239,8 +207,8 @@ class Ec extends React.Component {
 	}
 
 	render() {
-		return (<Base title="Enjoy your Shopping." content={this.contents()}/>)
+		return (<Base title="お気に入り" content={this.contents()}/>)
 	}
 }
 
-export default Ec;
+export default Favorites;

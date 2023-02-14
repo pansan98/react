@@ -8,6 +8,7 @@ use App\Models\ShopProducts;
 use App\Models\ShopCarts;
 use App\Models\ShopCartsProducts;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class ShopCartController extends Controller
 {
@@ -39,12 +40,32 @@ class ShopCartController extends Controller
 	{
 		$user = $this->myauth_provider->get();
 		if(!empty($user)) {
-			/** @var ShopCarts $cart */
-			$products = ShopCarts::with(['products'])
-				->where('user_id', $user->id)
-				->first()
-				->toArray();
-			return $this->success(['products' => $products]);
+			$cart = ShopCarts::where('user_id', $user->id)
+				->first();
+			if($cart) {
+				/** @var \App\Providers\ShopCartProvider $provider */
+				$provider = app(\App\Providers\ShopCartProvider::class);
+				$products = $provider->products($cart);
+				return $this->success(['products' => $products]);
+			}
+		}
+		return $this->failed();
+	}
+
+	public function pay(Request $request)
+	{
+		$user = $this->myauth_provider->get();
+		if($user) {
+			$cart = ShopCarts::where('user_id', $user->id)
+				->first();
+			if($cart) {
+				/** @var \App\Providers\ShopCartProvider $provider */
+				$provider = app(\App\Providers\ShopCartProvider::class);
+				$ret = $provider->pay($user, $cart);
+				if($ret) {
+					return $this->success();
+				}
+			}
 		}
 		return $this->failed();
 	}

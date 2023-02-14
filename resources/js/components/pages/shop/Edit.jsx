@@ -134,7 +134,7 @@ class Edit extends React.Component {
 							<div className="card-body">
 								<div className="d-flex">
 									<Link to="/shop" className="btn btn-default">戻る</Link>
-									<button className="btn btn-primary ml-auto" onClick={(e) => this.save(e)}>{this.props.page}</button>
+									<button className="btn btn-primary ml-auto" onClick={(e) => this.save(e)}>保存</button>
 								</div>
 							</div>
 						</div>
@@ -222,6 +222,7 @@ class Edit extends React.Component {
 					<div className="card-body">
 						<div className="d-flex">
 							<Link to="/shop" className="btn btn-default">戻る</Link>
+							<Link to="/shop/create" className="btn btn-primary ml-auto">追加</Link>
 						</div>
 						<p className="text-center">保存しました。</p>
 					</div>

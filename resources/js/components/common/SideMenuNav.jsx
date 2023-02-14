@@ -18,19 +18,19 @@ class SideMenuNav extends React.Component {
 					</li>
 					<li className="nav-item">
 						<Link to="/practice/stop-watch" className="nav-link">
-							<i className="nav-icon far fa-image"></i>
+							<i className="nav-icon far fa-clock"></i>
 							<p>Stop Watch</p>
 						</Link>
 					</li>
 					<li className="nav-item">
 						<Link to="/shop" className="nav-link">
-							<i className="nav-icon far fa-shopping-cart"></i>
-							<p>Shop</p>
+							<i className="nav-icon fas fa-shopping-cart"></i>
+							<p>Shop Dashboard</p>
 						</Link>
 					</li>
 					<li className="nav-item">
 						<Link to="/ec" className="nav-link">
-							<i className="nav-icon far fa-image"></i>
+							<i className="nav-icon fas fa-store-alt"></i>
 							<p>EC</p>
 						</Link>
 					</li>

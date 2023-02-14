@@ -19,7 +19,10 @@ class ShopProductController extends Controller
 				->where('deleted_at', null)
 				->where(function($query) use ($search) {
 					if(!empty($search)) {
-						$query->where('name', 'LIKE', '%'.$search.'%');
+						$searches = explode(' ', mb_convert_kana($search, 's', 'UTF-8'));
+						foreach ($searches as $value) {
+							$query->orWhere('name', 'LIKE', '%'.$value.'%');
+						}
 					}
 				})
 				->orderByDesc('id')

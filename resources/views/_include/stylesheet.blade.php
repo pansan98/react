@@ -1,13 +1,15 @@
+<!-- reset css -->
+<link href="https://cdn.jsdelivr.net/npm/destyle.css@1.0.15/destyle.css" rel="stylesheet">
 <!-- Fonts -->
 <link href="https://fonts.googleapis.com/css?family=Source+Sans+Pro:300,400,400i,700&display=fallback" rel="stylesheet">
 <!-- Font Awesome -->
-<link href="/assets/plugins/css/font-awesome-free/css/all.min.css" rel="stylesheet">
+<link href="/assets/plugins/css/fontawesome-free/css/all.min.css" rel="stylesheet">
 <!-- Ionicons -->
 <link href="https://code.ionicframework.com/ionicons/2.0.1/css/ionicons.min.css" rel="stylesheet">
 <!-- Tempusdominus Bootstrap4 -->
 <link href="/assets/plugins/css/tempusdominus-bootstrap-4/css/tempusdmominus-bootstrap-4.min.css" rel="stylesheet">
 <!-- SweetAlert2 -->
-<link href="/assets/plugins/css/sweetalert2-theme-bootstrap-4/bootstrap-4.min.css" rel="stylesheet">
+<link href="/assets/plugins/css/sweetalert2-theme-bootstrap-4/css/bootstrap-4.min.css" rel="stylesheet">
 <!-- icheck bootstrap -->
 <link href="/assets/plugins/css/icheck-bootstrap/icheck-bootstrap.min.css" rel="stylesheet">
 

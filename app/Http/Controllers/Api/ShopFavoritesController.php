@@ -7,6 +7,7 @@ use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
 use App\Models\ShopFavorites;
 use App\Models\ShopProducts;
+use App\Models\ShopCarts;
 
 class ShopFavoritesController extends Controller
 {
@@ -61,6 +62,34 @@ class ShopFavoritesController extends Controller
 			}
 		}
 		
+		return $this->failed();
+	}
+
+	public function favorites(Request $request)
+	{
+		$user = $this->myauth_provider->get();
+		if($user) {
+			/** @var \App\Providers\ShopFavoritesProvider $provider */
+			$provider = app(\App\Providers\ShopFavoritesProvider::class);
+			$products = $provider->products($user);
+			$favorites = $provider->favorites($user);
+
+			$cart = ShopCarts::where('user_id', $user->id)
+				->first();
+			$carts = [];
+			if($cart) {
+				/** @var \App\Providers\ShopCartProvider $cart_provider */
+				$cart_provider = app(\App\Providers\ShopCartProvider::class);
+				$carts = $cart_provider->product_identifies($cart);
+			}
+
+			return $this->success([
+				'products' => $products,
+				'carts' => $carts,
+				'favorites' => $favorites
+			]);
+		}
+
 		return $this->failed();
 	}
 }

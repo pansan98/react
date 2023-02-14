@@ -50,4 +50,18 @@ class ShopFavoritesProvider extends ServiceProvider
 
 		return $favorites;
 	}
+
+	public function products(\App\Models\MyUser $user)
+	{
+		$products = \App\Models\ShopProducts::with(['user', 'thumbnails'])
+			->join('shop_favorites', function($join) use ($user) {
+				$join->on('shop_products.id', '=', 'shop_favorites.product_id')
+					->where('shop_favorites.user_id', '=', $user->id);
+			})->where('deleted_at', null)
+			->distinct()
+			->get()
+			->toArray();
+
+		return $products;
+	}
 }

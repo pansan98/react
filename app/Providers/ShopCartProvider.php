@@ -7,6 +7,8 @@ use Illuminate\Support\Facades\DB;
 use App\Models\ShopProducts;
 use App\Models\ShopCarts;
 use App\Models\ShopCartsProducts;
+use App\Models\ShopPurchaseHistories;
+use Illuminate\Support\Facades\Log;
 
 class ShopCartProvider extends ServiceProvider
 {
@@ -102,6 +104,7 @@ class ShopCartProvider extends ServiceProvider
 				$join->on('shop_products.id', '=', 'shop_carts_products.product_id')
 					->where('shop_carts_products.cart_id', '=', $cart->id);
 			})
+			->where('deleted_at', null)
 			->distinct()
 			->get();
 		
@@ -109,5 +112,45 @@ class ShopCartProvider extends ServiceProvider
 			$carts[] = $product->identify_code;
 		}
 		return $carts;
+	}
+
+	public function products(ShopCarts $cart, $to_array = true)
+	{
+		$products = ShopProducts::with(['thumbnails'])
+			->select('shop_products.*')
+			->join('shop_carts_products', function($join) use ($cart) {
+				$join->on('shop_products.id', '=', 'shop_carts_products.product_id')
+					->where('shop_carts_products.cart_id', '=', $cart->id);
+			})->where('deleted_at', null)
+			->distinct()
+			->get();
+		if($to_array) {
+			$products = $products->toArray();
+		}
+
+		return $products;
+	}
+
+	public function pay(\App\Models\MyUser $user, ShopCarts $cart)
+	{
+		$ret = false;
+		$products = $this->products($cart, false);
+		if($products->count() > 0) {
+			try {
+				$ret = DB::transaction(function() use ($user, $products) {
+					foreach ($products as $product) {
+						$history = new ShopPurchaseHistories();
+						$history->fill(['user_id' => $user->id, 'product_id' => $product->id])->save();
+						$this->remove($user, $product->identify_code);
+						$product->fill(['inventoly' => ($product->inventoly - 1)])->save();
+					}
+					return true;
+				});
+			} catch(\Exception $e) {
+				Log::warning($e->getMessage());
+			}
+		}
+
+		return $ret;
 	}
 }

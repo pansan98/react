@@ -59,10 +59,12 @@ Route::prefix('shop')->as('shop')->group(function() {
 		Route::post('/add/{identify}', [\App\Http\Controllers\Api\ShopCartController::class, 'add'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
 		Route::post('/remove/{identify}', [\App\Http\Controllers\Api\ShopCartController::class, 'remove'])->where(['indentify' => '[a-zA-Z0-9\-_]+']);
 		Route::get('/my', [\App\Http\Controllers\Api\ShopCartController::class, 'cart']);
+		Route::post('/pay', [\App\Http\Controllers\Api\ShopCartController::class, 'pay']);
 	});
 
 	Route::prefix('favorite')->as('favorite')->group(function() {
 		Route::post('/add/{identify}', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'add'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
 		Route::post('/remove/{identify}', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'remove'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
+		Route::get('/favorites', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'favorites']);
 	});
 });
