@@ -44,6 +44,7 @@ Route::prefix('auth')->as('auth')->group(function() {
 });
 
 Route::prefix('shop')->as('shop')->group(function() {
+	Route::get('/history', [\App\Http\Controllers\Api\ShopHistoryController::class, 'index']);
 	Route::get('/products', [\App\Http\Controllers\Api\ShopProductController::class, 'products']);
 	Route::get('/product/{identify}', [\App\Http\Controllers\Api\ShopProductController::class, 'product'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
 	Route::post('/product/destroy/{identify}', [\App\Http\Controllers\Api\ShopProductController::class, 'destroy'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
@@ -58,8 +59,8 @@ Route::prefix('shop')->as('shop')->group(function() {
 	Route::prefix('cart')->as('cart')->group(function() {
 		Route::post('/add/{identify}', [\App\Http\Controllers\Api\ShopCartController::class, 'add'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
 		Route::post('/remove/{identify}', [\App\Http\Controllers\Api\ShopCartController::class, 'remove'])->where(['indentify' => '[a-zA-Z0-9\-_]+']);
-		Route::get('/my', [\App\Http\Controllers\Api\ShopCartController::class, 'cart']);
 		Route::post('/pay', [\App\Http\Controllers\Api\ShopCartController::class, 'pay']);
+		Route::get('/my', [\App\Http\Controllers\Api\ShopCartController::class, 'cart']);
 	});
 
 	Route::prefix('favorite')->as('favorite')->group(function() {

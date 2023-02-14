@@ -8,6 +8,7 @@ use App\Models\ShopProducts;
 use App\Models\ShopCarts;
 use App\Models\ShopCartsProducts;
 use App\Models\ShopPurchaseHistories;
+use App\Models\ShopPurchase;
 use Illuminate\Support\Facades\Log;
 
 class ShopCartProvider extends ServiceProvider
@@ -138,9 +139,11 @@ class ShopCartProvider extends ServiceProvider
 		if($products->count() > 0) {
 			try {
 				$ret = DB::transaction(function() use ($user, $products) {
+					$purchase = new ShopPurchase();
+					$purchase->fill(['user_id' => $user->id])->save();
 					foreach ($products as $product) {
 						$history = new ShopPurchaseHistories();
-						$history->fill(['user_id' => $user->id, 'product_id' => $product->id])->save();
+						$history->fill(['purchase_id' => $purchase->id, 'product_id' => $product->id])->save();
 						$this->remove($user, $product->identify_code);
 						$product->fill(['inventoly' => ($product->inventoly - 1)])->save();
 					}

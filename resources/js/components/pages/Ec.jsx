@@ -143,6 +143,7 @@ class Ec extends React.Component {
 								onSearch={(e) => this.search(e)}
 							/>
 							<div className="ml-auto">
+								<Link to="/ec/history" className="btn btn-default"><i className="far fa-clock"></i></Link>
 								<Buttons
 								cart={this.state.cart.products.length}
 								favorites={this.state.favorites.length}
