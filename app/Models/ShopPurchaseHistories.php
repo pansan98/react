@@ -10,5 +10,5 @@ class ShopPurchaseHistories extends Model
 	use HasFactory;
 
 	protected $table = 'shop_purchase_histories';
-	protected $fillable = ['purchase_id', 'product_id'];
+	protected $fillable = ['purchase_id', 'product_id', 'price'];
 }

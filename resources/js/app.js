@@ -12,3 +12,6 @@ require('./bootstrap');
  * or customize the JavaScript scaffolding to fit your unique needs.
  */
 require('./components/App');
+
+import Utils from './components/plugins/Utils';
+window.Utils = new Utils();

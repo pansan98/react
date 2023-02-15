@@ -13,7 +13,7 @@ class ShopProducts extends Model
 
 	protected $table = 'shop_products';
 	protected $fillable = [
-		'user_id', 'media_group_id', 'identify_code', 'name', 'price', 'description', 'status', 'benefits', 'benefits_start', 'benefits_end', 'inventoly', 'inventoly_danger', 'max_purchase', 'fasted_delivery_day', 'customs'
+		'user_id', 'media_group_id', 'discount_id', 'identify_code', 'name', 'price', 'description', 'status', 'benefits', 'benefits_start', 'benefits_end', 'inventoly', 'inventoly_danger', 'max_purchase', 'fasted_delivery_day', 'customs'
 	];
 
 	public function thumbnails()
@@ -24,5 +24,10 @@ class ShopProducts extends Model
 	public function user()
 	{
 		return $this->hasOne(\App\Models\MyUser::class, 'id', 'user_id');
+	}
+
+	public function discount()
+	{
+		return $this->hasOne(\App\Models\ShopDiscounts::class, 'id', 'discount_id');
 	}
 }

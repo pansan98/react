@@ -51,6 +51,11 @@ Route::prefix('shop')->as('shop')->group(function() {
 	Route::post('/create', [\App\Http\Controllers\Api\ShopProductController::class, 'create']);
 	Route::post('/edit/{identify}', [\App\Http\Controllers\Api\ShopProductController::class, 'edit'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
 
+	Route::prefix('review')->as('review')->group(function() {
+		Route::get('/product/{identify}', [\App\Http\Controllers\Api\ShopReviewController::class, 'product'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
+		Route::post('/create/{identify}', [\App\Http\Controllers\Api\ShopReviewController::class, 'create'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
+	});
+
 	Route::prefix('ec')->as('ec')->group(function() {
 		Route::get('/products', [\App\Http\Controllers\Api\ShopEcProductController::class, 'products']);
 		Route::get('/product/{identify}', [\App\Http\Controllers\Api\ShopEcProductController::class, 'product'])->where(['identify' => '[a-zA-Z0-9\-_]+']);

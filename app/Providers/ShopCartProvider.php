@@ -143,7 +143,11 @@ class ShopCartProvider extends ServiceProvider
 					$purchase->fill(['user_id' => $user->id])->save();
 					foreach ($products as $product) {
 						$history = new ShopPurchaseHistories();
-						$history->fill(['purchase_id' => $purchase->id, 'product_id' => $product->id])->save();
+						$history->fill([
+							'purchase_id' => $purchase->id,
+							'product_id' => $product->id,
+							'price' => $product->price
+						])->save();
 						$this->remove($user, $product->identify_code);
 						$product->fill(['inventoly' => ($product->inventoly - 1)])->save();
 					}

@@ -10,5 +10,5 @@ class ShopReviews extends Model
     use HasFactory;
 
     protected $table = 'shop_reviews';
-    protected $fillable = ['product_id', 'user_id', 'star', 'comment'];
+    protected $fillable = ['product_id', 'user_id', 'star', 'comment', 'viewed'];
 }

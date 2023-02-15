@@ -16,6 +16,7 @@ import EcDetail from './pages/ec/ParamsDetail';
 import EcCart from './pages/ec/Cart';
 import EcFavorites from './pages/ec/Favorites';
 import EcHistory from './pages/ec/History';
+import EcReview from './pages/ec/ParamsReview';
 
 // Auth
 import Login from './auth/Login';
@@ -42,6 +43,7 @@ class App extends React.Component {
 						<Route path="/ec/cart" element={<EcCart />} />
 						<Route path="/ec/favorites" element={<EcFavorites />} />
 						<Route path="/ec/history" element={<EcHistory />} />
+						<Route path="/ec/review/:code" element={<EcReview />} />
 						<Route path="/my/profile" element={<MyProfile />} />
 						<Route path="/practice/stop-watch" element={<StopWatch />} />
 						<Route path="/auth/login" element={<Login />} />

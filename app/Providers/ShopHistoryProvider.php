@@ -6,6 +6,7 @@ use Illuminate\Support\ServiceProvider;
 use App\Models\ShopProducts;
 use App\Models\ShopPurchase;
 use App\Models\ShopPurchaseHistories;
+use Illuminate\Support\Facades\Log;
 
 class ShopHistoryProvider extends ServiceProvider
 {
@@ -37,9 +38,16 @@ class ShopHistoryProvider extends ServiceProvider
 		if($purchases) {
 			foreach ($purchases as &$purchase) {
 				$purchase->products = ShopProducts::with(['thumbnails'])
+					->select('shop_products.*')
+					->addSelect('shop_purchase_histories.price AS history_price')
+					->addSelect('shop_reviews.id AS review')
 					->join('shop_purchase_histories', function($join) use ($purchase) {
 						$join->on('shop_purchase_histories.product_id', '=', 'shop_products.id')
 							->where('shop_purchase_histories.purchase_id', '=', $purchase->id);
+					})
+					->leftJoin('shop_reviews', function($join) use ($user) {
+						$join->on('shop_reviews.product_id', '=', 'shop_products.id')
+							->where('shop_reviews.user_id', '=', $user->id);
 					})
 					->get();
 			}
