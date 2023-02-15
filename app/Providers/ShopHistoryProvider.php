@@ -34,7 +34,7 @@ class ShopHistoryProvider extends ServiceProvider
 
 	public function histories(\App\Models\MyUser $user)
 	{
-		$purchases = ShopPurchase::where('user_id', $user->id)->get();
+		$purchases = ShopPurchase::where('user_id', $user->id)->orderByDesc('created_at')->get();
 		if($purchases) {
 			foreach ($purchases as &$purchase) {
 				$purchase->products = ShopProducts::with(['thumbnails'])
