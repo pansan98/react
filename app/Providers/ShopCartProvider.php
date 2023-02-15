@@ -9,6 +9,7 @@ use App\Models\ShopCarts;
 use App\Models\ShopCartsProducts;
 use App\Models\ShopPurchaseHistories;
 use App\Models\ShopPurchase;
+use App\Models\Notifications;
 use Illuminate\Support\Facades\Log;
 
 class ShopCartProvider extends ServiceProvider
@@ -149,7 +150,16 @@ class ShopCartProvider extends ServiceProvider
 							'price' => $product->price
 						])->save();
 						$this->remove($user, $product->identify_code);
-						$product->fill(['inventoly' => ($product->inventoly - 1)])->save();
+						$stock = $product->inventoly - 1;
+						$product->fill(['inventoly' => $stock])->save();
+						if($product->inventoly_danger >= $stock) {
+							$notification = new Notifications();
+							$notification->fill([
+								'type' => 'stock',
+								'user_id' => $user->id,
+								'message' => $product->name . 'の在庫が残り少なくなっています。ダッシュボードを確認してください。'
+							])->save();
+						}
 					}
 					return true;
 				});

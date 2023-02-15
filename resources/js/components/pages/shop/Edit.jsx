@@ -186,6 +186,7 @@ class Edit extends React.Component {
 									label="在庫数"
 									formName="inventoly"
 									value={this.state.inventoly}
+									values={[{label:1,value:1},{label:2,value:2},{label:3,value:3},{label:4,value:4},{label:5,value:5},{label:6,value:6},{label:7,value:7},{label:8,value:8},{label:9,value:9},{label:10,value:10}]}
 									onChange={(name, value) => this.handlerChange(name, value)}
 								/>
 								<Error error={this.state.errors.inventoly}/>
@@ -193,6 +194,7 @@ class Edit extends React.Component {
 									label="在庫通知数"
 									formName="inventoly_danger"
 									value={this.state.inventoly_danger}
+									values={[{label:1,value:1},{label:2,value:2},{label:3,value:3},{label:4,value:4},{label:5,value:5},{label:6,value:6},{label:7,value:7},{label:8,value:8},{label:9,value:9},{label:10,value:10}]}
 									onChange={(name, value) => this.handlerChange(name, value)}
 								/>
 								<Error error={this.state.errors.inventoly_danger}/>
@@ -200,6 +202,7 @@ class Edit extends React.Component {
 									label="一度に購入できる最大数"
 									formName="max_purchase"
 									value={this.state.max_purchase}
+									values={[{label:1,value:1},{label:2,value:2},{label:3,value:3},{label:4,value:4},{label:5,value:5},{label:6,value:6},{label:7,value:7},{label:8,value:8},{label:9,value:9},{label:10,value:10}]}
 									onChange={(name, value) => this.handlerChange(name, value)}
 								/>
 								<Error error={this.state.errors.max_purchase}/>
@@ -207,6 +210,7 @@ class Edit extends React.Component {
 									label="最短お届け可能日数"
 									formName="fasted_delivery_day"
 									value={this.state.fasted_delivery_day}
+									values={[{label:1,value:1},{label:2,value:2},{label:3,value:3},{label:4,value:4},{label:5,value:5},{label:6,value:6},{label:7,value:7}]}
 									onChange={(name, value) => this.handlerChange(name, value)}
 								/>
 								<Error error={this.state.errors.fasted_delivery_day}/>
@@ -222,7 +226,6 @@ class Edit extends React.Component {
 					<div className="card-body">
 						<div className="d-flex">
 							<Link to="/shop" className="btn btn-default">戻る</Link>
-							<Link to="/shop/create" className="btn btn-primary ml-auto">追加</Link>
 						</div>
 						<p className="text-center">保存しました。</p>
 					</div>
