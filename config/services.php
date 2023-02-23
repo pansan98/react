@@ -33,9 +33,9 @@ return [
     
     'social' => [
         'google' => [
-            'client' => env('SOCIALLOGIN_GOOGLE_CLIENT_ID'),
-            'secret' => env('SOCIALLOGIN_GOOGLE_SECRET'),
-            'callback' => env('SOCIALLOGIN_GOOGLE_CALLBACK_URL')
+            'client' => env('SOCIALLOGIN_GOOGLE_CLIENT_ID', '254697936169-dhascrbvqav0f4399616ehi7mnp7mt6j.apps.googleusercontent.com'),
+            'secret' => env('SOCIALLOGIN_GOOGLE_SECRET', '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'),
+            'callback' => env('SOCIALLOGIN_GOOGLE_CALLBACK_URL', 'http://react.practice.local.com/auth/social/google')
         ]
     ]
 ];
