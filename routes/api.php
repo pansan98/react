@@ -41,6 +41,8 @@ Route::prefix('auth')->as('auth')->group(function() {
 			return view('welcome');
 		});
 	});
+
+	Route::get('/social/redirect/{type}', [\App\Http\Controllers\Api\SocialAuthController::class, 'redirect']);
 });
 
 Route::prefix('shop')->as('shop')->group(function() {

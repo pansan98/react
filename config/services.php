@@ -30,5 +30,12 @@ return [
         'secret' => env('AWS_SECRET_ACCESS_KEY'),
         'region' => env('AWS_DEFAULT_REGION', 'us-east-1'),
     ],
-
+    
+    'social' => [
+        'google' => [
+            'client' => env('SOCIALLOGIN_GOOGLE_CLIENT_ID'),
+            'secret' => env('SOCIALLOGIN_GOOGLE_SECRET'),
+            'callback' => env('SOCIALLOGIN_GOOGLE_CALLBACK_URL')
+        ]
+    ]
 ];
