@@ -1,10 +1,10 @@
 :local(.slider) {
-	overflow: "hidden";
-	display: "flex";
+	overflow: hidden;
+	display: flex;
 	:global {
-		&ul {
-			list-style: "none";
-			display: "flex";
+		.carousel__slider-tray {
+			list-style: none;
+			display: flex;
 			margin: 0;
 			padding: 0;
 		}
