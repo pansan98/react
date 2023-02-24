@@ -21,7 +21,7 @@ class MyUser extends Model
 
 	protected $table = 'my_users';
 	protected $fillable = [
-		'login_id', 'password', 'name', 'email', 'profession', 'gender', 'identify_code', 'social_uniq', 'thumbnail_id', 'active_sharing_id', 'active_flag', 'delete_flag'
+		'login_id', 'password', 'name', 'email', 'profession', 'gender', 'identify_code', 'social_uniq', 'thumbnail_id', 'active_sharing_id', 'two_authorize_flag', 'active_flag', 'delete_flag'
 	];
 	protected $hidden = ['login_id', 'password', 'delete_flag'];
 

@@ -8,6 +8,7 @@ import Base from '../Base';
 
 import Text from '../../forms/Text';
 import Radio from '../../forms/Radio';
+import Checkbox from '../../forms/Checkbox';
 import Uploader from '../../forms/Uploader';
 import Error from '../../forms/Error';
 
@@ -21,13 +22,15 @@ class Profile extends React.Component {
 			f_profession: '',
 			f_gender: 0,
 			f_thumbnail: [],
+			f_two_authorize: [],
 			profile: {
 				path: '/assets/img/no-image.jpg'
 			},
 			errors: {
 				name: [],
 				email: [],
-				thumbnail: []
+				thumbnail: [],
+				two_authorize: []
 			},
 			forms: {
 				gender: []
@@ -51,7 +54,8 @@ class Profile extends React.Component {
 				f_email: this.props.user.email,
 				f_profession: this.props.user.profession,
 				f_gender: this.props.user.gender,
-				f_thumbnail: thumbnails
+				f_thumbnail: thumbnails,
+				f_two_authorize: (this.props.user.two_authorize_flag) ? [parseInt(this.props.user.two_authorize_flag)] : []
 			});
 		}
 
@@ -99,7 +103,8 @@ class Profile extends React.Component {
 					f_email: res.data.user.email,
 					f_profession: res.data.user.profession,
 					f_gender: res.data.user.gender,
-					f_thumbnail: thumbnails
+					f_thumbnail: thumbnails,
+					f_two_authorize: (res.data.user.two_authorize_flag) ? [parseInt(res.data.user.two_authorize_flag)] : []
 				})
 			}
 		}).catch((e) => {
@@ -122,6 +127,7 @@ class Profile extends React.Component {
 			profession: this.state.f_profession,
 			gender: this.state.f_gender,
 			thumbnail: this.state.f_thumbnail,
+			two_authorize: this.state.f_two_authorize,
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
@@ -238,9 +244,18 @@ class Profile extends React.Component {
 										formName="f_thumbnail"
 										message="画像をアップロード"
 										values={this.state.f_thumbnail}
+										isHold={false}
 										onChange={(name, value) => this.handlerChange(name, value)}
 									/>
 									<Error error={this.state.errors.thumbnail}/>
+									<Checkbox
+										label="2段階認証"
+										formName="f_two_authorize"
+										value={this.state.f_two_authorize ? this.state.f_two_authorize : []}
+										values={[{value:1,label:'有効'}]}
+										onChange={(name, value) => this.handlerChange(name, value)}
+									/>
+									<Error error={this.state.errors.two_authorize}/>
 								</div>
 								<button className="btn btn-primary" onClick={(e) => this.save(e)}>保存</button>
 							</div>

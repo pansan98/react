@@ -113,7 +113,8 @@ class MyAuthController extends Controller
 				'email' => $user->email,
 				'profession' => $user->profession,
 				'gender' => $user->gender,
-				'thumbnail' => $user->thumbnail
+				'thumbnail' => $user->thumbnail,
+				'two_authorize' => $user->two_authorize_flag
 			];
 		}
 
@@ -147,6 +148,13 @@ class MyAuthController extends Controller
 						}
 					}
 				}
+
+				if(isset($params['two_authorize'])) {
+					$params['two_authorize_flag'] = true;
+				} else {
+					$params['two_authorize_flag'] = false;
+				}
+
 				$user->fill($params)->save();
 				if(empty($ret['path'])) {
 					$ret['path'] = ($user->thumbnail) ? $user->thumbnail->path : null;

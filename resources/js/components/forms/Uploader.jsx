@@ -13,7 +13,7 @@ class Uploader extends React.Component {
 		}
 
 		this.uploader = new FileUploader({
-			files: this.props.values,
+			files: (this.props.isHold) ? this.props.values : [],
 			max_file: this.props.maxFile,
 			multiple: this.props.multiple,
 			callbacks: {
@@ -66,7 +66,7 @@ class Uploader extends React.Component {
 
 	// アップロード描画
 	upload_content() {
-		if(!this.props.values.length || this.props.values.length < this.props.maxFile) {
+		if(!this.uploader.flush().length || this.uploader.flush().length < this.props.maxFile) {
 			return (
 				<div id={this.props.action} className="row">
 					<div
@@ -88,7 +88,7 @@ class Uploader extends React.Component {
 
 	// プレビュー描画
 	preview_content() {
-		if(this.props.values.length) {
+		if(this.uploader.flush().length) {
 			return (
 				<div id={this.props.uploaded} className="d-flex files uploader-preview">
 					{this.props.values.map((v, k) => {
@@ -125,7 +125,7 @@ class Uploader extends React.Component {
 	}
 
 	render() {
-		if(this.props.values.length && !this.uploader.config.files.length) {
+		if(this.props.isHold && this.props.values.length && !this.uploader.config.files.length) {
 			// Uploader側にfileを持たせる
 			this.uploader.config.files = this.props.values;
 		}
@@ -147,6 +147,7 @@ Uploader.defaultProps = {
 	dropzone: 'upload-dropzoen',
 	uploaded: 'uploaded',
 	message: 'ファイルをアップロード',
+	isHold: true,
 	values: [],
 	maxFile: 1,
 	multiple: false
