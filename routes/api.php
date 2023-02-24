@@ -42,7 +42,7 @@ Route::prefix('auth')->as('auth')->group(function() {
 		});
 	});
 
-	Route::get('/social/redirect/{type}', [\App\Http\Controllers\Api\SocialAuthController::class, 'redirect']);
+	Route::get('/social/redirect/{provider}', [\App\Http\Controllers\Api\SocialAuthController::class, 'redirect'])->where(['provider' => '[a-zA-Z]+']);
 });
 
 Route::prefix('shop')->as('shop')->group(function() {

@@ -19,6 +19,7 @@ class Login extends React.Component {
 			},
 			login: false,
 			loading: false,
+			loading_message: '',
 			share: false,
 			sharings: {
 				sharing: false,
@@ -94,6 +95,18 @@ class Login extends React.Component {
 				sharing_available: false,
 				use: 0
 			}
+		})
+	}
+
+	onSocialSignin(provider) {
+		this.setState({loading: true, message: 'リダイレクト中...'});
+		axios.get('/api/auth/social/redirect/' + provider).then((res) => {
+			if(res.data.result) {
+				window.location.href = res.data.redirect;
+			}
+		}).catch((e) => {
+			console.log(e)
+			this.setState({loading: false, message: ''})
 		})
 	}
 
@@ -183,6 +196,11 @@ class Login extends React.Component {
 					<div className="col-4">
 						<button type="submit" className="btn btn-primary btn-block" onClick={(e) => this.onLogin(e)}>Sign in</button>
 					</div>
+					<div className="d-flex mt-2">
+						<p className="text-center pointer" onClick={(e) => this.onSocialSignin('google')}>
+							<img src="/assets/img/sns/google-social-login.png" alt="Signup for Google" width="300"/>
+						</p>
+					</div>
 					<p className="mb-0">
 						<Link className="text-center" to="/auth/register">Register</Link>
 					</p>
@@ -205,6 +223,7 @@ class Login extends React.Component {
 			<div className="login-page">
 				<Loader
 					is_loading={this.state.loading}
+					message={this.state.loading_message}
 				/>
 				<div className="login-box">
 					<PageLoader />

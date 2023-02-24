@@ -15,8 +15,8 @@ return new class extends Migration
     {
         Schema::create('my_users', function (Blueprint $table) {
             $table->increments('id');
-            $table->string('login_id', 191);
-            $table->longText('password');
+            $table->string('login_id', 191)->nullable();
+            $table->longText('password')->nullable();
             $table->string('name', 191);
             $table->string('email', 191)->nullable();
             $table->tinyInteger('active_flag')->unsigned()->default(0);

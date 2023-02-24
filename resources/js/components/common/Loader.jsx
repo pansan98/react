@@ -15,6 +15,7 @@ class Loader extends React.Component {
 					<div className="overlay"></div>
 					<RevolvingDot
 						color="#61dbfb"
+						textContent={this.props.message}
 					/>
 				</div>
 			)
@@ -25,7 +26,8 @@ class Loader extends React.Component {
 }
 
 Loader.defaultProps = {
-	is_loading: false
+	is_loading: false,
+	message: ''
 }
 
 export default Loader;
