@@ -43,6 +43,10 @@ Route::prefix('auth')->as('auth')->group(function() {
 	});
 
 	Route::get('/social/redirect/{provider}', [\App\Http\Controllers\Api\SocialAuthController::class, 'redirect'])->where(['provider' => '[a-zA-Z]+']);
+	Route::post('/authorize/{identify}/{token}', [\App\Http\Controllers\Api\MyAuthController::class, 'certification'])
+		->where([
+			'identify' => '[a-zA-Z0-9]+'
+		]);
 });
 
 Route::prefix('shop')->as('shop')->group(function() {

@@ -21,6 +21,7 @@ import EcReview from './pages/ec/ParamsReview';
 // Auth
 import Login from './auth/Login';
 import Register from './auth/Register';
+import Authorize from './auth/ParamsAuthorize';
 
 class App extends React.Component {
 	constructor(props) {
@@ -48,6 +49,7 @@ class App extends React.Component {
 						<Route path="/practice/stop-watch" element={<StopWatch />} />
 						<Route path="/auth/login" element={<Login />} />
 						<Route path="/auth/register" element={<Register />} />
+						<Route path="/auth/authorize/:identify/:token" element={<Authorize />} />
 					</Routes>
 				</React.Fragment>
 			</BrowserRouter>

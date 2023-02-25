@@ -21,7 +21,7 @@ class MyAuthController extends Controller
 			'share' => false
 		];
 		$params = $request->request->all();
-		$user = MyUser::where('login_id', $params['login_id'])
+		$user = MyUser::with(['access_token'])->where('login_id', $params['login_id'])
 			->where('delete_flag', 0)
 			->first();
 		if(!empty($user)) {
@@ -33,14 +33,26 @@ class MyAuthController extends Controller
 					->where('user_id', $user->id)
 					->first();
 				if(!empty($sharing)) {
-					$this->myauth_provider->retension($user->identify_code, $sharing);
-					return $this->success();
+					if($user->two_authorize_flag) {
+						list($token, $code) = $this->twoAuthorize($user, $user->id, ($user->access_token) ? $user->access_token->token : null);
+						$redirect = '/auth/authorize/' . $user->identify_code . '/' . $token;
+						$res = [
+							'result' => true,
+							'share' => false,
+							'authorize' => true,
+							'redirect' => $redirect
+						];
+					} else {
+						$this->myauth_provider->retension($user->identify_code, $sharing);
+						return $this->success();
+					}
 				} else {
 					$sharings = SharingLogin::where('user_id', $user->id)->get()->toArray();
 					if(count($sharings) < SharingLogin::MAX_USE) {
 						$res = [
 							'result' => true,
 							'share' => true,
+							'authorize' => false,
 							'sharings' => [
 								'sharing' => true,
 								'sharing_available' => true,
@@ -177,5 +189,30 @@ class MyAuthController extends Controller
 		}
 
 		return $this->success();
+	}
+
+	public function certification(Request $request, $identify, $token)
+	{
+		$user = MyUser::where('identify_code', $identify)
+			->first();
+		if($user) {
+			$ip = $request->ip();
+			$os = $request->header('User-Agent');
+			$sharing = SharingLogin::where('ip', $ip)
+				->where('os', $os)
+				->where('user_id', $user->id)
+				->first();
+			if($sharing) {
+				$code = $request->request->get('code');
+				$ret = $this->collation($user, $user->id, $token, $code);
+				if($ret) {
+					$this->myauth_provider->retension($user->identify_code, $sharing);
+					return $this->success(['authorize' => true]);
+				}
+			}
+			return $this->success(['authorize' => false]);
+		}
+
+		return $this->failed();
 	}
 }

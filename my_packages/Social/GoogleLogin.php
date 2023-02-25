@@ -8,7 +8,6 @@ use Illuminate\Support\Facades\Log;
 class GoogleLogin extends SocialLogin {
 	protected $endpoints = [
 		'redirect' => '',
-		// TODO GCP側の設定とhostsの追加
 		'callback' => 'http://react.practice.local.com/auth/social/google'
 	];
 	protected $type = 'google';

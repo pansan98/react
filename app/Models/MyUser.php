@@ -46,6 +46,11 @@ class MyUser extends Model
 		return $this->belongsToMany(\App\Models\ShopProducts::class, 'shop_favorites', 'user_id', 'id', 'product_id', 'id');
 	}
 
+	public function access_token()
+	{
+		return $this->morphOne('\App\Models\AccessTokens', 'tokenable');
+	}
+
 	public static function labels($label)
 	{
 		$labels = [];

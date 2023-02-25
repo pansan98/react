@@ -48,13 +48,17 @@ class Login extends React.Component {
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
-				if(res.data.share) {
-					this.setState({
-						share: res.data.share,
-						sharings: res.data.sharings
-					});
+				if(res.data.authorize) {
+					window.location.href = res.data.redirect;
 				} else {
-					this.setState({login: true});
+					if(res.data.share) {
+						this.setState({
+							share: res.data.share,
+							sharings: res.data.sharings
+						});
+					} else {
+						this.setState({login: true});
+					}
 				}
 			}
 			return;
@@ -77,7 +81,11 @@ class Login extends React.Component {
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
-				this.setState({login: true});
+				if(res.data.authorize) {
+					window.location.href = res.data.redirect;
+				} else {
+					this.setState({login: true});
+				}
 			}
 		}).catch((e) => {
 			console.log(e);

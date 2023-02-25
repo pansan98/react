@@ -26,8 +26,20 @@ class MySharingController extends MyAuthController
 					return [true, $sharing];
 				});
 				if($ret) {
-					$this->myauth_provider->retension($user->identify_code, $sharing);
-					return $this->success();
+					if($user->two_authorize_flag) {
+						list($token, $code) = $this->twoAuthorize($user, $user->id, ($user->access_token) ? $user->access_token->token : null);
+						$redirect = '/auth/authorize/' . $user->identify_code . '/' . $token;
+						$res = [
+							'result' => true,
+							'share' => false,
+							'authorize' => true,
+							'redirect' => $redirect
+						];
+						return $this->success($res);
+					} else {
+						$this->myauth_provider->retension($user->identify_code, $sharing);
+						return $this->success();
+					}
 				}
 			}
 		}
