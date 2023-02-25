@@ -6,6 +6,7 @@ use Illuminate\Http\Request;
 use App\Http\Requests\AuthRegisterRequest;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthProfileRequest;
+use App\Http\Requests\AuthForgotRequest;
 use App\Http\Controllers\Controller;
 use App\Models\MyUser;
 use App\Models\SharingLogin;
@@ -34,7 +35,7 @@ class MyAuthController extends Controller
 					->first();
 				if(!empty($sharing)) {
 					if($user->two_authorize_flag) {
-						list($token, $code) = $this->twoAuthorize($user, $user->id, ($user->access_token) ? $user->access_token->token : null);
+						list($token, $code) = $this->myAuthorize($user, $user->id, 60 * 10);
 						$redirect = '/auth/authorize/' . $user->identify_code . '/' . $token;
 						$res = [
 							'result' => true,
@@ -126,7 +127,7 @@ class MyAuthController extends Controller
 				'profession' => $user->profession,
 				'gender' => $user->gender,
 				'thumbnail' => $user->thumbnail,
-				'two_authorize' => $user->two_authorize_flag
+				'two_authorize_flag' => $user->two_authorize_flag
 			];
 		}
 
@@ -161,7 +162,7 @@ class MyAuthController extends Controller
 					}
 				}
 
-				if(isset($params['two_authorize'])) {
+				if(!empty($params['two_authorize'])) {
 					$params['two_authorize_flag'] = true;
 				} else {
 					$params['two_authorize_flag'] = false;
@@ -211,6 +212,25 @@ class MyAuthController extends Controller
 				}
 			}
 			return $this->success(['authorize' => false]);
+		}
+
+		return $this->failed();
+	}
+
+	public function forgot(AuthForgotRequest $request)
+	{
+		$forgot = $request->request->get('forgot');
+		$user = MyUser::where(function($query) use ($forgot) {
+			$query->orWhere('login_id', $forgot)
+				->orWhere('email', $forgot);
+		})->where('delete_flag', 0)
+			->first();
+		if($user) {
+			list($token, $code) = $this->myAuthorize($user, $user->id);
+			return $this->success([
+				'identify' => $user->identify_code,
+				'token' => $token
+			]);
 		}
 
 		return $this->failed();

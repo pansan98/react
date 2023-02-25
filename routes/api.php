@@ -30,6 +30,7 @@ Route::prefix('auth')->as('auth')->group(function() {
 	Route::post('/login', [\App\Http\Controllers\Api\MyAuthController::class, 'login']);
 	Route::post('/logout', [\App\Http\Controllers\Api\MyAuthController::class, 'logout']);
 	Route::post('/register', [\App\Http\Controllers\Api\MyAuthController::class, 'register']);
+	Route::post('/forgot', [\App\Http\Controllers\Api\MyAuthController::class, ' forgot']);
 	Route::post('/profile', [\App\Http\Controllers\Api\MyAuthController::class, 'profile']);
 	Route::post('/profile/thumbnail/destroy', [\App\Http\Controllers\Api\MyAuthController::class, 'thumbnail_destroy']);
 	Route::get('/user', [\App\Http\Controllers\Api\MyAuthController::class, 'user']);

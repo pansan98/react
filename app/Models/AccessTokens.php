@@ -28,11 +28,9 @@ class AccessTokens extends Model
 			->first();
 	}
 
-	public static function findAccessToken($class, $id, $token)
+	public static function findAccessToken($class, $id)
 	{
-		$token = Crypt::decryptString($token);
-		return self::where('token', $token)
-			->where('tokenable_type', get_class($class))
+		return self::where('tokenable_type', get_class($class))
 			->where('tokenable_id', $id)
 			->first();
 	}

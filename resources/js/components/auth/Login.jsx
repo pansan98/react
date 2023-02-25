@@ -209,8 +209,11 @@ class Login extends React.Component {
 							<img src="/assets/img/sns/google-social-login.png" alt="Signup for Google" width="300"/>
 						</p>
 					</div>
-					<p className="mb-0">
+					<p>
 						<Link className="text-center" to="/auth/register">Register</Link>
+					</p>
+					<p className="mb-0">
+						<Link className="text-center" to="/auth/forgot">forgot for password</Link>
 					</p>
 				</div>
 			)

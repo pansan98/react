@@ -5,15 +5,11 @@ namespace App\Http\Controllers\Traits;
 use App\Models\AccessTokens;
 use Illuminate\Support\Facades\Crypt;
 
-trait TwoAuthorizeController
+trait MyAuthorizeController
 {
-	protected function twoAuthorize($class, $id, $token, $expire = 3600, $callback_fn = null)
+	protected function myAuthorize($class, $id, $expire = 3600, $callback_fn = null)
 	{
-		$access_token = null;
-		if($token) {
-			$token = Crypt::encryptString($token);
-			$access_token = AccessTokens::findAccessToken($class, $id, $token);
-		}
+		$access_token = AccessTokens::findAccessToken($class, $id);
 
 		if(!$access_token) {
 			list($token, $code) = AccessTokens::saveAccessToken($class, $id, $expire);

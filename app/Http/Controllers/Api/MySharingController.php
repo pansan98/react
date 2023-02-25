@@ -27,7 +27,7 @@ class MySharingController extends MyAuthController
 				});
 				if($ret) {
 					if($user->two_authorize_flag) {
-						list($token, $code) = $this->twoAuthorize($user, $user->id, ($user->access_token) ? $user->access_token->token : null);
+						list($token, $code) = $this->myAuthorize($user, $user->id, 60 * 10);
 						$redirect = '/auth/authorize/' . $user->identify_code . '/' . $token;
 						$res = [
 							'result' => true,
