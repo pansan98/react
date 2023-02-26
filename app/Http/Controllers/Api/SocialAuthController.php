@@ -7,7 +7,6 @@ use App\Http\Controllers\Controller;
 use MyPackages\Social\SocialClient;
 use Illuminate\Support\Facades\Log;
 use Symfony\Component\HttpKernel\Exception\NotFoundHttpException;
-use App\Models\SocialTokens;
 use App\Models\MyUser;
 use App\Models\SharingLogin;
 use Illuminate\Support\Facades\DB;

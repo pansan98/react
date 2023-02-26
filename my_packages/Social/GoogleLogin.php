@@ -2,7 +2,7 @@
 
 namespace MyPackages\Social;
 
-use \Google\Client;
+use Google\Client;
 use Illuminate\Support\Facades\Log;
 
 class GoogleLogin extends SocialLogin {

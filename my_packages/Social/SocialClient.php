@@ -2,12 +2,12 @@
 
 namespace MyPackages\Social;
 
-use \MyPackages\Social\GoogleLogin;
+use MyPackages\Social\GoogleLogin;
 use Illuminate\Support\Facades\DB;
 use Illuminate\Support\Facades\Log;
-use \App\Models\MyUser;
-use \App\Models\SharingLogin;
-use \App\Models\SocialTokens;
+use App\Models\MyUser;
+use App\Models\SharingLogin;
+use App\Models\SocialTokens;
 
 class SocialClient {
 	public static $instance;
