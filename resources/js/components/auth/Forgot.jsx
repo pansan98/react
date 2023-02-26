@@ -29,7 +29,6 @@ class Forgot extends React.Component {
 	}
 
 	onApp(e) {
-		// TODO なんか動かん
 		this.setState({loading: true})
 		axios.post('/api/auth/forgot', {
 			forgot: this.state.forgot,

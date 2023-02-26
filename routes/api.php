@@ -30,7 +30,7 @@ Route::prefix('auth')->as('auth')->group(function() {
 	Route::post('/login', [\App\Http\Controllers\Api\MyAuthController::class, 'login']);
 	Route::post('/logout', [\App\Http\Controllers\Api\MyAuthController::class, 'logout']);
 	Route::post('/register', [\App\Http\Controllers\Api\MyAuthController::class, 'register']);
-	Route::post('/forgot', [\App\Http\Controllers\Api\MyAuthController::class, ' forgot']);
+	Route::post('/forgot', [\App\Http\Controllers\Api\MyAuthController::class, 'forgot']);
 	Route::post('/profile', [\App\Http\Controllers\Api\MyAuthController::class, 'profile']);
 	Route::post('/profile/thumbnail/destroy', [\App\Http\Controllers\Api\MyAuthController::class, 'thumbnail_destroy']);
 	Route::get('/user', [\App\Http\Controllers\Api\MyAuthController::class, 'user']);
@@ -44,7 +44,17 @@ Route::prefix('auth')->as('auth')->group(function() {
 	});
 
 	Route::get('/social/redirect/{provider}', [\App\Http\Controllers\Api\SocialAuthController::class, 'redirect'])->where(['provider' => '[a-zA-Z]+']);
+	
 	Route::post('/authorize/{identify}/{token}', [\App\Http\Controllers\Api\MyAuthController::class, 'certification'])
+		->where([
+			'identify' => '[a-zA-Z0-9]+'
+		]);
+	
+	Route::post('/password/reset/{identify}/{token}', [\App\Http\Controllers\Api\MyAuthController::class, 'p_reset'])
+		->where([
+			'identify' => '[a-zA-Z0-9]+'
+		]);
+	Route::post('/password/authorize/{identify}/{token}', [\App\Http\Controllers\Api\MyAuthController::class, 'p_authorize'])
 		->where([
 			'identify' => '[a-zA-Z0-9]+'
 		]);

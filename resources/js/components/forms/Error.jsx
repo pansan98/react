@@ -27,4 +27,8 @@ class Error extends React.Component {
 	}
 }
 
+Error.defaultProps = {
+	error: []
+}
+
 export default Error;

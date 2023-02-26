@@ -7,6 +7,7 @@ use App\Http\Requests\AuthRegisterRequest;
 use App\Http\Requests\AuthLoginRequest;
 use App\Http\Requests\AuthProfileRequest;
 use App\Http\Requests\AuthForgotRequest;
+use Illuminate\Support\Facades\Validator;
 use App\Http\Controllers\Controller;
 use App\Models\MyUser;
 use App\Models\SharingLogin;
@@ -233,6 +234,56 @@ class MyAuthController extends Controller
 			]);
 		}
 
+		return $this->failed();
+	}
+
+	public function p_authorize(Request $request, $identify, $token)
+	{
+		$user = MyUser::where('identify_code', $identify)
+			->where('delete_flag', 0)
+			->first();
+		if($user) {
+			$code = $request->request->get('code');
+			$ret = $this->collation($user, $user->id, $token, $code);
+			if($ret) {
+				list($new_token, $new_code) = $this->myAuthorize($user, $user->id);
+				return $this->success([
+					'token' => $new_token,
+					'code' => $new_code
+				]);
+			}
+		}
+		return $this->failed();
+	}
+
+	public function p_reset(Request $request, $identify, $token)
+	{
+		$validator = Validator::make($request->all(), [
+			'password' => ['required', 'regex:/^[a-zA-Z0-9]+$/', 'min:4', 'max:100']
+		]);
+		if($validator->fails()) {
+			return $this->failed([
+				'errors' => $validator->errors()
+			]);
+		}
+
+		$user = MyUser::where('identify_code', $identify)
+			->where('delete_flag', 0)
+			->first();
+		if($user) {
+			$code = $request->request->get('code');
+			$password = $request->request->get('password');
+			$ret = $this->collation($user, $user->id, $token, $code);
+			if($ret) {
+				$saved = DB::transaction(function() use ($user, $password) {
+					$user->fill(['password' => password_hash($password, PASSWORD_DEFAULT)])->save();
+					return true;
+				});
+				if($saved) {
+					return $this->success();
+				}
+			}
+		}
 		return $this->failed();
 	}
 }

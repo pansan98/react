@@ -48,7 +48,7 @@ class AccessTokens extends Model
 		list($token, $code) = DB::transaction(function() use ($params) {
 			$access_token = new self();
 			$access_token->fill($params)->save();
-			return [Crypt::encryptString($access_token->token), $access_token->code];
+			return [Crypt::encryptString($access_token->token), $access_token->authorize_code];
 		});
 
 		return [$token, $code];
@@ -68,7 +68,7 @@ class AccessTokens extends Model
 					'used_at' => null
 				])->save();
 
-				return [Crypt::encryptString($access_token->token), $access_token->code];
+				return [Crypt::encryptString($access_token->token), $access_token->authorize_code];
 			});
 
 			return [$token, $code];

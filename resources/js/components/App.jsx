@@ -23,6 +23,7 @@ import Login from './auth/Login';
 import Register from './auth/Register';
 import Authorize from './auth/ParamsAuthorize';
 import Forgot from './auth/Forgot';
+import Password from './auth/ParamsPassword';
 
 class App extends React.Component {
 	constructor(props) {
@@ -52,6 +53,7 @@ class App extends React.Component {
 						<Route path="/auth/register" element={<Register />} />
 						<Route path="/auth/forgot" element={<Forgot />} />
 						<Route path="/auth/authorize/:identify/:token" element={<Authorize />} />
+						<Route path="/auth/password/:identify/:token" element={<Password />} />
 					</Routes>
 				</React.Fragment>
 			</BrowserRouter>
