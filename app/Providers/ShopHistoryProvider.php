@@ -55,4 +55,11 @@ class ShopHistoryProvider extends ServiceProvider
 
 		return $purchases;
 	}
+
+	public function products(\App\Models\ShopProducts $product)
+	{
+		return ShopPurchaseHistories::where('product_id', $product->id)
+			->orderByDesc('created_at')
+			->get();
+	}
 }
