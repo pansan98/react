@@ -198,7 +198,8 @@ return [
         App\Providers\MediaServiceProvider::class,
         App\Providers\ShopCartProvider::class,
         App\Providers\ShopFavoritesProvider::class,
-        App\Providers\ShopHistoryProvider::class
+        App\Providers\ShopHistoryProvider::class,
+        App\Providers\ShopViewsProvider::class
     ],
 
     /*

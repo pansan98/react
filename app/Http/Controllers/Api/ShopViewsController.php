@@ -29,6 +29,20 @@ class ShopViewsController extends Controller
 
 	public function review(Request $request, $identify)
 	{
+		$user = $this->myauth_provider->get();
+		if($user) {
+			$product = ShopProducts::where('user_id', $user->id)
+				->where('identify_code', $identify)
+				->where('deleted_at', null)
+				->first();
+			if($product) {
+				/** \App\Providers\ShopViewsProvider $provider */
+				$provider = app(\App\Providers\ShopViewsProvider::class);
+				$reviews = $provider->review($product);
+				return $this->success(['views' => $reviews]);
+			}
+		}
 
+		return $this->failed();
 	}
 }

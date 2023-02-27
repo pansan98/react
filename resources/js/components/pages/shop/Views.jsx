@@ -11,9 +11,10 @@ class Views extends React.Component {
 		this.state = {
 			product: {},
 			history: [],
-			review: [],
+			review: {},
 			loaded: []
 		}
+		this.keys = {0: 'history', 1: 'review'}
 	}
 
 	componentDidMount() {
@@ -34,7 +35,6 @@ class Views extends React.Component {
 						state[type] = res.data.views;
 					}
 					this.setState(state);
-					console.log(this.state)
 				}
 			}).catch((e) => {
 				console.log(e)
@@ -43,7 +43,9 @@ class Views extends React.Component {
 	}
 
 	onTab(type) {
-		this.fetch(type)
+		if(typeof this.keys[type] !== 'undefined') {
+			this.fetch(this.keys[type])
+		}
 	}
 
 	tabs() {
@@ -74,7 +76,25 @@ class Views extends React.Component {
 			,
 			<div className="tab-pane active show">
 				<div className="overlay-wrapper">
-					くちこみコンテンツ
+					{(this.state.review && this.state.review.total > 0) ?
+					<div>
+						<div>
+							<p>口コミ投稿数：{this.state.review.total}件</p>
+							<div className="row">
+								{this.state.review.reviews.map((review, k) => {
+									return (
+										<div key={`review-${k}`} className="col-12">
+											<p>口コミ投稿者：{review.user.name}{(!review.viewed) ? <i className="text-right fab fa-readme"></i> : ''}</p>
+											<p className="fs-l">評価：{review.star}</p>
+											<button className="btn btn-default">口コミを読む</button>
+										</div>
+									)
+								})}
+							</div>
+						</div>
+					</div>
+					:
+					<div>口コミが投稿されていません。</div>}
 				</div>
 			</div>
 		]
