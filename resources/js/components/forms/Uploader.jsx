@@ -125,7 +125,7 @@ class Uploader extends React.Component {
 	}
 
 	render() {
-		if(this.props.isHold && this.props.values.length && !this.uploader.config.files.length) {
+		if(this.props.isHold && this.props.values.length) {
 			// Uploader側にfileを持たせる
 			this.uploader.config.files = this.props.values;
 		}

@@ -103,7 +103,7 @@ class Profile extends React.Component {
 					f_email: res.data.user.email,
 					f_profession: res.data.user.profession,
 					f_gender: res.data.user.gender,
-					f_thumbnail: thumbnails,
+					//f_thumbnail: thumbnails,
 					f_two_authorize: (res.data.user.two_authorize_flag) ? [parseInt(res.data.user.two_authorize_flag)] : []
 				})
 			}

@@ -96,6 +96,7 @@ class Password extends React.Component {
 						<div className="card-body">
 							<Text
 							label="新しいパスワード"
+							type="password"
 							value={this.state.password}
 							formName="password"
 							onChange={(name, value) => this.handlerChange(name, value)}
