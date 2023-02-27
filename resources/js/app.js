@@ -13,5 +13,5 @@ require('./bootstrap');
  */
 require('./components/App');
 
-import Utils from './components/plugins/Utils';
+import Utils from './plugins/Utils';
 window.Utils = new Utils();

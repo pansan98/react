@@ -90,4 +90,9 @@ Route::prefix('shop')->as('shop')->group(function() {
 		Route::post('/remove/{identify}', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'remove'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
 		Route::get('/favorites', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'favorites']);
 	});
+
+	Route::prefix('views')->as('views')->group(function() {
+		Route::get('/{identify}/history', [\App\Http\Controllers\Api\ShopViewsController::class, 'history'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
+		Route::get('/{identify}/review', [\App\Http\Controllers\Api\ShopViewsController::class, 'review'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
+	});
 });

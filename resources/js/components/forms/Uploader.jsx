@@ -1,6 +1,6 @@
 import React from 'react';
 
-import FileUploader from '../plugins/FileUploader';
+import FileUploader from '../../plugins/FileUploader';
 import Style from '../../../sass/forms/Uploader';
 
 class Uploader extends React.Component {

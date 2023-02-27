@@ -2,20 +2,46 @@ import React from 'react';
 import {Link} from 'react-router-dom';
 
 import Base from '../Base';
+import TabContents from '../../plugins/TabContents';
 
 class Views extends React.Component {
 	constructor(props) {
 		super(props);
+
+		this.state = {
+			history: [],
+			review: []
+		}
 	}
 
-	tab_content() {
-		return (
+	fetch(type) {
+		axios.get('/api/shop/views/' + this.props.code + '/' + type, {
+			credentials: 'same-origin'
+		}).then((res) => {
+			if(res.data.result) {
+				if(typeof this.state[type] !== 'undefined') {
+					const state = {};
+					state[type] = res.data.views;
+					this.setState(state);
+				}
+			}
+		})
+	}
+
+	tabs() {
+		return [
 			<div className="tab-pane active show">
 				<div className="overlay-wrapper">
-					Content inserted
+					購入履歴コンテンツ
 				</div>
 			</div>
-		)
+			,
+			<div className="tab-pane active show">
+				<div className="overlay-wrapper">
+					くちこみコンテンツ
+				</div>
+			</div>
+		]
 	}
 
 	contents() {
@@ -29,31 +55,10 @@ class Views extends React.Component {
 							</div>
 						</div>
 					</div>
-					<div className="card card-primary card-tabs">
-						<div className="card-header p-0 pt-1">
-							<ul className="nav nav-tabs">
-								<li className="nav-item">
-									<button
-										className="nav-link active"
-									>
-										購入履歴
-									</button>
-								</li>
-								<li className="nav-item">
-									<button
-										className="nav-link"
-									>
-										口コミ/評価
-									</button>
-								</li>
-							</ul>
-						</div>
-						<div className="card-body">
-							<div className="tab-content">
-								<div className="tab-content">{this.tab_content()}</div>
-							</div>
-						</div>
-					</div>
+					<TabContents
+					list={['購入履歴', 'くちこみ評価']}
+					contents={this.tabs()}
+					/>
 				</div>
 			</div>
 		)
@@ -62,6 +67,10 @@ class Views extends React.Component {
 	render() {
 		return (<Base title="商品関連情報" content={this.contents()}/>)
 	}
+}
+
+Views.defaultProps = {
+	code: ''
 }
 
 export default Views;
