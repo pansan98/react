@@ -13,6 +13,11 @@ class Utils {
 
 		return format;
 	}
+
+	numberformat(number) {
+		const formatter = new Intl.NumberFormat('ja-jp')
+		return formatter.format(number)
+	}
 }
 
 export default Utils;

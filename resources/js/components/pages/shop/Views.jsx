@@ -63,7 +63,7 @@ class Views extends React.Component {
 											<div className="timeline-body">
 												{this.state.product.description}
 											</div>
-											<p className="text-right">購入金額：{this.state.product.history_price}円</p>
+											<p className="text-right">購入金額：{Utils.numberformat(this.state.product.price)}円</p>
 										</div>
 									</div>
 									<hr/>
