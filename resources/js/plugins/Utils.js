@@ -18,6 +18,43 @@ class Utils {
 		const formatter = new Intl.NumberFormat('ja-jp')
 		return formatter.format(number)
 	}
+
+	async apiHandler(method, endpoint, params, final) {
+		method = method.toUpperCase()
+		return new Promise((resolve, reject) => {
+			if(method === 'POST') {
+				axios.post(endpoint, params).then((res) => {
+					if(typeof res.data.login !== 'undefined') {
+						if(!res.data.login) {
+							reject({error: 'regenerate login'})
+						}
+					}
+					resolve(res)
+				}).catch((e) => {
+					reject(e)
+				}).finally(() => {
+					if(typeof final === 'function') {
+						final()
+					}
+				})
+			} else {
+				axios.get(endpoint, params).then((res) => {
+					if(typeof res.data.login !== 'undefined') {
+						if(!res.data.login) {
+							reject({error: 'regenerate login'})
+						}
+					}
+					resolve(res)
+				}).catch((e) => {
+					reject(e)
+				}).finally(() => {
+					if(typeof final === 'function') {
+						final()
+					}
+				})
+			}
+		})
+	}
 }
 
 export default Utils;

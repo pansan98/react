@@ -27,4 +27,5 @@
 <link href="/assets/css/forms/Uploader.css" rel="stylesheet">
 <link href="/assets/css/common/Loader.css" rel="stylesheet">
 <link href="/assets/css/plugins/Slider.css" rel="stylesheet">
+<link href="/assets/css/plugins/Modal.css" rel="stylesheet">
 @yield('stylesheet')

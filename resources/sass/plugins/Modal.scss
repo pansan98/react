@@ -1,0 +1,21 @@
+:local(.mymodal) {
+	position: absolute;
+	z-index: 10000;
+	:global {
+		.modal-overlay {
+			background: #000;
+			opacity: .3;
+			position: fixed;
+			top: 0;
+			left: 0;
+			width: 100%;
+			height: 100%;
+		}
+
+		.modal-dialog {
+			position: fixed;
+			top: 10%;
+			left: 40%;
+		}
+	}
+}

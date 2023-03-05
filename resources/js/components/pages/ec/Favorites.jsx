@@ -3,7 +3,11 @@ import {Link} from 'react-router-dom';
 
 import Base from '../Base';
 import Loader from '../../common/Loader';
+import Modal from '../../plugins/Modal';
 import Buttons from './parts/Buttons';
+
+import Text from '../../forms/Text'
+import Error from '../../forms/Error'
 
 class Favorites extends React.Component {
 	constructor(props) {
@@ -12,12 +16,30 @@ class Favorites extends React.Component {
 			products: [],
 			carts: [],
 			favorites: [],
-			loading: false
+			loading: false,
+			f_name: '',
+			errors: {
+				f_name: []
+			},
+			modal_options: {
+				active: false,
+				title: '',
+				content: '',
+				classes: ['modal-xl'],
+				buttons: [],
+				closefn: () => {}
+			}
 		}
 	}
 
 	componentDidMount() {
 		this.fetch();
+	}
+
+	handlerChange(name, value) {
+		const params = {};
+		params[name] = value;
+		this.setState(params);
 	}
 
 	async fetch(callback_fn) {
@@ -38,6 +60,148 @@ class Favorites extends React.Component {
 				callback_fn();
 			}
 		})
+	}
+
+	modalClose() {
+		this.setState({
+			modal_options: {
+				active: false,
+				title: '',
+				content: '',
+				success: false
+			}
+		})
+	}
+
+	async folders(product) {
+		this.setState({loading: true})
+		const response = await axios.get('/api/shop/favorite/folders', {
+			credentials: 'same-origin'
+		}).then((res) => {
+			return res.data
+		}).catch((e) => {
+			console.log(e)
+			return {result: false}
+		}).finally(() => {
+			this.setState({loading: false})
+		})
+
+		if(response.result) {
+			this.setState({
+				modal_options: {
+					active: true,
+					title: 'お気に入りフォルダ',
+					content: this.foldersContent(response.folders, product)
+				}
+			})
+		}
+	}
+
+	async createFolder() {
+		this.setState({loading: true})
+		const res = await axios.post('/api/shop/favorite/folder/create', {
+			name: this.state.f_name,
+			credentials: 'same-origin'
+		}).then((res) => {
+			return res.data
+		}).catch((e) => {
+			if(e.response.status === 400) {
+				this.setState({errors: e.response.data.errors});
+			}
+			console.log(e)
+			return {result: false}
+		})
+
+		if(res.reuslt) {
+			this.setState({
+				modal_options: {
+					active: true,
+					title: '',
+					content: ''
+				}
+			})
+			this.fetch(() => {
+				this.setState({loading: false})
+			})
+		} else {
+			this.setState({loading: false})
+		}
+	}
+
+	modalCreateFolder(e) {
+		this.setState({
+			modal_options: {
+				active: true,
+				title: 'お気に入りフォルダを追加',
+				content: this.modalCreateFolderContent(),
+				closefn: () => this.modalClose(),
+				success: true,
+				callbackfn: () => {
+					this.createFolder()
+				}
+			}
+		})
+	}
+
+	modalCreateFolderContent() {
+		return (
+			<div>
+				<Text
+				label="フォルダ名"
+				value={this.state.f_name}
+				formName="f_name"
+				onChange={(name, value) => this.handlerChange(name, value)}
+				/>
+				<Error error={this.state.errors.f_name}/>
+			</div>
+		)
+	}
+
+	async addFolder(id, product) {
+		this.setState({loading: true})
+		const res = await axios.post('/api/shop/favorite/folder/' + id, {
+			product: product,
+			credentials: 'same-origin'
+		}).then((res) => {
+			return res.data
+		}).catch((e) => {
+			console.log(e)
+			return {result: false}
+		}).finally(() => {
+			this.setState({
+				f_modal: false,
+				fm_content: ''
+			})
+		})
+
+		if(res.result) {
+			this.fetch()
+		}
+		this.setState({loading: false})
+	}
+
+	foldersContent(data, product, child) {
+		return (
+			data.map((folder, k) => {
+				return (
+					<div
+					key={`folder-${k}`}
+					className={(typeof child !== 'undefined') ? 'children mb-1 ml-1' : 'master mb-2'}
+					>
+						<div>
+							<button
+							className="btn btn-block btn-default"
+							onClick={(e) => this.addFolder(folder.id, product)}
+							>
+								<i className="fas fa-folder-plus"></i>
+								{folder.name}
+							</button>
+						</div>
+						{(folder.children) ? this.foldersContent(folder.children, product, true) : ''}
+					</div>
+				)
+			})
+		)
 	}
 
 	async addCart(e, identify) {
@@ -119,6 +283,15 @@ class Favorites extends React.Component {
 						</div>
 					</div>
 				</div>
+				<div className="card">
+					<div className="card-header d-flex">
+						<button className="btn btn-primary ml-auto" onClick={(e) => this.modalCreateFolder(e)}>追加</button>
+					</div>
+					<div className="card-body">
+						<button className="btn btn-block btn-primary text-left"><i className="fas fa-folder-open"></i>フォルダー1</button>
+						<button className="btn btn-block btn-primary text-left"><i className="fas fa-folder-open"></i>フォルダー2</button>
+					</div>
+				</div>
 				<div className="card card-list">
 					<Loader is_loading={this.state.loading}/>
 					<div className="card-body pb-0">
@@ -130,8 +303,14 @@ class Favorites extends React.Component {
 									className="col-12 col-sm-6 col-md-4 d-flex align-items-stretch flex-column"
 									>
 										<div className="card bg-light d-flex flex-fill">
-											<div className="card-header text-muted border-bottom-0">
-												出品者：{product.user.name}
+											<div className="card-header text-muted border-bottom-0 d-flex">
+												<div className="p-0 col-10 d-inline-flex align-items-center">出品者：{product.user.name}</div>
+												<button
+												className="btn btn-default ml-auto col-2"
+												onClick={(e) => this.folders(product.identify_code)}
+												>
+													<i className="fas fa-folder-plus"></i>
+												</button>
 											</div>
 											<div className="card-body pt-0">
 												<div className="row">
@@ -202,6 +381,16 @@ class Favorites extends React.Component {
 						</div>
 					</div>
 				</div>
+
+				<Modal
+				title={this.state.modal_options.title}
+				active={this.state.modal_options.active}
+				content={this.state.modal_options.content}
+				classes={this.state.modal_options.classes}
+				closefn={this.state.modal_options.closefn}
+				success={false}
+				callbackfn={() => {}}
+				/>
 			</div>
 		)
 	}

@@ -5,9 +5,11 @@ namespace App\Http\Controllers\Api;
 use Illuminate\Http\Request;
 use App\Http\Controllers\Controller;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Validator;
 use App\Models\ShopFavorites;
 use App\Models\ShopProducts;
 use App\Models\ShopCarts;
+use App\Models\Folders;
 
 class ShopFavoritesController extends Controller
 {
@@ -91,5 +93,36 @@ class ShopFavoritesController extends Controller
 		}
 
 		return $this->failed();
+	}
+
+	public function folders(Request $request)
+	{
+		$user = $this->myauth_provider->get();
+		if($user) {
+			return $this->success(['data' => []]);
+		}
+		return $this->failed();
+	}
+
+	public function folder(Request $request, $folder_id)
+	{
+		$user = $this->myauth_provider->get();
+		if($user) {
+			$product = $request->request->get('product');
+		}
+	}
+
+	public function create_folder(Request $request)
+	{
+		$validator = Validator::make($request->all(), [
+			'name' => ['required']
+		]);
+		if($validator->fails()) {
+			return $this->failed([
+				'errors' => $validator->errors()
+			]);
+		}
+
+		$user = $this->myauth_provider->get();
 	}
 }
