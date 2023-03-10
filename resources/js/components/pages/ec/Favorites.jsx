@@ -27,7 +27,9 @@ class Favorites extends React.Component {
 				content: '',
 				classes: ['modal-xl'],
 				buttons: [],
-				closefn: () => {}
+				success: true,
+				closefn: () => {},
+				callbackfn: () => {}
 			}
 		}
 	}
@@ -64,11 +66,11 @@ class Favorites extends React.Component {
 
 	modalClose() {
 		this.setState({
+			f_name: '',
 			modal_options: {
 				active: false,
 				title: '',
-				content: '',
-				success: false
+				content: ''
 			}
 		})
 	}
@@ -98,7 +100,7 @@ class Favorites extends React.Component {
 	}
 
 	async createFolder() {
-		this.setState({loading: true})
+		this.setState({loading: true, modal_options: {active: false}})
 		const res = await axios.post('/api/shop/favorite/folder/create', {
 			name: this.state.f_name,
 			credentials: 'same-origin'
@@ -106,7 +108,8 @@ class Favorites extends React.Component {
 			return res.data
 		}).catch((e) => {
 			if(e.response.status === 400) {
-				this.setState({errors: e.response.data.errors});
+				this.setState({errors: e.response.data.errors})
+				this.modalCreateFolder()
 			}
 			console.log(e)
 			return {result: false}
@@ -114,8 +117,9 @@ class Favorites extends React.Component {
 
 		if(res.reuslt) {
 			this.setState({
+				f_name: '',
 				modal_options: {
-					active: true,
+					active: false,
 					title: '',
 					content: ''
 				}
@@ -125,6 +129,7 @@ class Favorites extends React.Component {
 			})
 		} else {
 			this.setState({loading: false})
+			this.modalCreateFolder()
 		}
 	}
 
@@ -388,8 +393,8 @@ class Favorites extends React.Component {
 				content={this.state.modal_options.content}
 				classes={this.state.modal_options.classes}
 				closefn={this.state.modal_options.closefn}
-				success={false}
-				callbackfn={() => {}}
+				success={this.state.modal_options.success}
+				callbackfn={this.state.modal_options.callbackfn}
 				/>
 			</div>
 		)

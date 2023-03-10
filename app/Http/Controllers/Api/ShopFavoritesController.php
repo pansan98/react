@@ -124,5 +124,15 @@ class ShopFavoritesController extends Controller
 		}
 
 		$user = $this->myauth_provider->get();
+		if($user) {
+			$name = $request->request->get('name');
+			$parent = $request->request->get('parent', null);
+			$ret = Folders::create($user, $user->id, 'favorite', $name, $parent);
+			if($ret) {
+				return $this->success();
+			}
+		}
+
+		return $this->failed();
 	}
 }

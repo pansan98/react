@@ -49,7 +49,7 @@ class Modal extends React.Component {
 								{(this.props.success)
 								?
 								<button
-								className="btn btn-primary"
+								className="btn btn-primary ml-auto"
 								onClick={(e) => this.props.callbackfn()}
 								>
 									Save
