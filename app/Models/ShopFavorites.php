@@ -10,5 +10,5 @@ class ShopFavorites extends Model
     use HasFactory;
 
     protected $table = 'shop_favorites';
-    protected $fillable = ['user_id', 'product_id'];
+    protected $fillable = ['user_id', 'product_id', 'folder_id'];
 }

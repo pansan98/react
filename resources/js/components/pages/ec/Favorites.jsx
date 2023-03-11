@@ -12,24 +12,56 @@ import Error from '../../forms/Error'
 class Favorites extends React.Component {
 	constructor(props) {
 		super(props);
+		// デフォルトオプション
+		this.config = {
+			modals: {
+				folder_create: {
+					active: false,
+					title: 'お気に入りフォルダ追加',
+					classes: ['modal-xl'],
+					success: true,
+					closefn: () => {},
+					callbackfn: () => {}
+				},
+				folder_add: {
+					active: false,
+					title: 'フォルダに追加',
+					classes: ['modal-xl'],
+					success: false,
+					closefn: () => {},
+					callbackfn: () => {}
+				}
+			}
+		}
+
 		this.state = {
 			products: [],
 			carts: [],
 			favorites: [],
+			folders: [],
+			folder: null,
 			loading: false,
 			f_name: '',
 			errors: {
 				f_name: []
 			},
-			modal_options: {
-				active: false,
-				title: '',
-				content: '',
-				classes: ['modal-xl'],
-				buttons: [],
-				success: true,
-				closefn: () => {},
-				callbackfn: () => {}
+			folder_create: {
+				active: this.config.modals.folder_create.active,
+				title: this.config.modals.folder_create.title,
+				classes: this.config.modals.folder_create.classes,
+				success: this.config.modals.folder_create.success,
+				closefn: () => this.config.modals.folder_create.closefn,
+				callbackfn: () => this.config.modals.folder_create.callbackfn
+			},
+			folder_add: {
+				folders: [],
+				product: null,
+				active: this.config.modals.folder_add.active,
+				title: this.config.modals.folder_add.title,
+				classes: this.config.modals.folder_add.classes,
+				success: this.config.modals.folder_add.success,
+				closefn: () => this.config.modals.folder_add.closefn,
+				callbackfn: () => this.config.modals.folder_add.callbackfn
 			}
 		}
 	}
@@ -46,13 +78,15 @@ class Favorites extends React.Component {
 
 	async fetch(callback_fn) {
 		await axios.get('/api/shop/favorite/favorites', {
+			folder: this.folder,
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
 				this.setState({
 					products: res.data.products,
 					carts: res.data.carts,
-					favorites: res.data.favorites
+					favorites: res.data.favorites,
+					folders: res.data.folders
 				})
 			}
 		}).catch((e) => {
@@ -64,45 +98,15 @@ class Favorites extends React.Component {
 		})
 	}
 
-	modalClose() {
-		this.setState({
-			f_name: '',
-			modal_options: {
-				active: false,
-				title: '',
-				content: ''
-			}
-		})
-	}
-
-	async folders(product) {
-		this.setState({loading: true})
-		const response = await axios.get('/api/shop/favorite/folders', {
-			credentials: 'same-origin'
-		}).then((res) => {
-			return res.data
-		}).catch((e) => {
-			console.log(e)
-			return {result: false}
-		}).finally(() => {
-			this.setState({loading: false})
-		})
-
-		if(response.result) {
-			this.setState({
-				modal_options: {
-					active: true,
-					title: 'お気に入りフォルダ',
-					content: this.foldersContent(response.folders, product)
-				}
-			})
-		}
-	}
-
 	async createFolder() {
-		this.setState({loading: true, modal_options: {active: false}})
+		this.setState({
+			loading: true,
+			folder_create: Object.assign(this.config.modals.folder_create, {
+				active: false
+			})
+		})
 		const res = await axios.post('/api/shop/favorite/folder/create', {
-			name: this.state.f_name,
+			f_name: this.state.f_name,
 			credentials: 'same-origin'
 		}).then((res) => {
 			return res.data
@@ -118,10 +122,9 @@ class Favorites extends React.Component {
 		if(res.reuslt) {
 			this.setState({
 				f_name: '',
-				modal_options: {
-					active: false,
-					title: '',
-					content: ''
+				folder_create: Object.assign(this.config.modals.folder_create, {active: false}),
+				errors: {
+					f_name: []
 				}
 			})
 			this.fetch(() => {
@@ -133,18 +136,20 @@ class Favorites extends React.Component {
 		}
 	}
 
+	modalCloseCreateFolder() {
+		this.setState({
+			f_name: '',
+			folder_create: Object.assign(this.config.modals.folder_create, {active: false})
+		})
+	}
+
 	modalCreateFolder(e) {
 		this.setState({
-			modal_options: {
+			folder_create: Object.assign(this.config.modals.folder_create, {
 				active: true,
-				title: 'お気に入りフォルダを追加',
-				content: this.modalCreateFolderContent(),
-				closefn: () => this.modalClose(),
-				success: true,
-				callbackfn: () => {
-					this.createFolder()
-				}
-			}
+				closefn: () => this.modalCloseCreateFolder(),
+				callbackfn: () => this.createFolder()
+			})
 		})
 	}
 
@@ -162,6 +167,31 @@ class Favorites extends React.Component {
 		)
 	}
 
+	async folders(product) {
+		this.setState({loading: true})
+		const response = await axios.get('/api/shop/favorite/folders', {
+			credentials: 'same-origin'
+		}).then((res) => {
+			return res.data
+		}).catch((e) => {
+			console.log(e)
+			return {result: false}
+		}).finally(() => {
+			this.setState({loading: false})
+		})
+
+		if(response.result) {
+			this.setState({
+				folder_add: Object.assign(this.config.modals.folder_add, {
+					active: true,
+					folders: response.folders,
+					product: product,
+					closefn: () => this.modalCloseFolders()
+				})
+			})
+		}
+	}
+
 	async addFolder(id, product) {
 		this.setState({loading: true})
 		const res = await axios.post('/api/shop/favorite/folder/' + id, {
@@ -173,16 +203,29 @@ class Favorites extends React.Component {
 			console.log(e)
 			return {result: false}
 		}).finally(() => {
-			this.setState({
-				f_modal: false,
-				fm_content: ''
-			})
+			this.setState({loading: false})
 		})
 
 		if(res.result) {
+			this.setState({
+				folder_add: Object.assign(this.config.modals.folder_add, {
+					active: false,
+					folders: [],
+					product: null
+				})
+			})
 			this.fetch()
 		}
-		this.setState({loading: false})
+	}
+
+	modalCloseFolders() {
+		this.setState({
+			folder_add: Object.assign(this.config.modals.folder_add, {
+				active: false,
+				product: null,
+				folders: []
+			})
+		})
 	}
 
 	foldersContent(data, product, child) {
@@ -195,7 +238,7 @@ class Favorites extends React.Component {
 					>
 						<div>
 							<button
-							className="btn btn-block btn-default"
+							className="btn btn-block btn-default text-left"
 							onClick={(e) => this.addFolder(folder.id, product)}
 							>
 								<i className="fas fa-folder-plus"></i>
@@ -290,11 +333,19 @@ class Favorites extends React.Component {
 				</div>
 				<div className="card">
 					<div className="card-header d-flex">
-						<button className="btn btn-primary ml-auto" onClick={(e) => this.modalCreateFolder(e)}>追加</button>
+						<button className="btn btn-primary ml-auto" onClick={(e) => this.modalCreateFolder(e)}>フォルダ追加</button>
 					</div>
 					<div className="card-body">
-						<button className="btn btn-block btn-primary text-left"><i className="fas fa-folder-open"></i>フォルダー1</button>
-						<button className="btn btn-block btn-primary text-left"><i className="fas fa-folder-open"></i>フォルダー2</button>
+						{this.state.folders.length ?
+						this.state.folders.map((folder, k) => {
+							return (
+								<button key={`folder-${k}`} className="btn btn-block btn-primary text-left">
+									<i className="fas fa-folder-open"></i>
+									{folder.name}
+								</button>
+							)
+						})
+						: 'お気に入りフォルダがありません。'}
 					</div>
 				</div>
 				<div className="card card-list">
@@ -387,15 +438,28 @@ class Favorites extends React.Component {
 					</div>
 				</div>
 
+
 				<Modal
-				title={this.state.modal_options.title}
-				active={this.state.modal_options.active}
-				content={this.state.modal_options.content}
-				classes={this.state.modal_options.classes}
-				closefn={this.state.modal_options.closefn}
-				success={this.state.modal_options.success}
-				callbackfn={this.state.modal_options.callbackfn}
-				/>
+				title={this.state.folder_create.title}
+				active={this.state.folder_create.active}
+				classes={this.state.folder_create.classes}
+				closefn={this.state.folder_create.closefn}
+				success={this.state.folder_create.success}
+				callbackfn={this.state.folder_create.callbackfn}
+				>
+					{this.modalCreateFolderContent()}
+				</Modal>
+
+				<Modal
+				title={this.state.folder_add.title}
+				active={this.state.folder_add.active}
+				classes={this.state.folder_add.classes}
+				closefn={this.state.folder_add.closefn}
+				success={this.state.folder_add.success}
+				callbackfn={this.state.folder_add.callbackfn}
+				>
+					{this.foldersContent(this.state.folder_add.folders, this.state.folder_add.product)}
+				</Modal>
 			</div>
 		)
 	}

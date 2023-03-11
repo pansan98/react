@@ -51,12 +51,17 @@ class ShopFavoritesProvider extends ServiceProvider
 		return $favorites;
 	}
 
-	public function products(\App\Models\MyUser $user)
+	public function products(\App\Models\MyUser $user, $folder = null)
 	{
 		$products = \App\Models\ShopProducts::with(['user', 'thumbnails'])
-			->join('shop_favorites', function($join) use ($user) {
+			->join('shop_favorites', function($join) use ($user, $folder) {
 				$join->on('shop_products.id', '=', 'shop_favorites.product_id')
 					->where('shop_favorites.user_id', '=', $user->id);
+					if($folder) {
+						$join->where('folder_id', $folder);
+					} else {
+						$join->whereNull('folder_id');
+					}
 			})->where('deleted_at', null)
 			->distinct()
 			->get()

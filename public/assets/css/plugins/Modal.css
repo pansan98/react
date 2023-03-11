@@ -11,8 +11,8 @@
   width: 100%;
   height: 100%;
 }
-.F7C1bbbk5w1jEbQmCppl .modal-dialog {
+.F7C1bbbk5w1jEbQmCppl .modal {
   position: fixed;
   top: 10%;
-  left: 40%;
+  display: block;
 }

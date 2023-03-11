@@ -71,9 +71,10 @@ class ShopFavoritesController extends Controller
 	{
 		$user = $this->myauth_provider->get();
 		if($user) {
+			$folder = $request->query->get('folder', null);
 			/** @var \App\Providers\ShopFavoritesProvider $provider */
 			$provider = app(\App\Providers\ShopFavoritesProvider::class);
-			$products = $provider->products($user);
+			$products = $provider->products($user, $folder);
 			$favorites = $provider->favorites($user);
 
 			$cart = ShopCarts::where('user_id', $user->id)
@@ -84,11 +85,13 @@ class ShopFavoritesController extends Controller
 				$cart_provider = app(\App\Providers\ShopCartProvider::class);
 				$carts = $cart_provider->product_identifies($cart);
 			}
+			$folders = Folders::findFolders($user, $user->id, 'favorite')->toArray();
 
 			return $this->success([
 				'products' => $products,
 				'carts' => $carts,
-				'favorites' => $favorites
+				'favorites' => $favorites,
+				'folders' => $folders
 			]);
 		}
 
@@ -99,7 +102,8 @@ class ShopFavoritesController extends Controller
 	{
 		$user = $this->myauth_provider->get();
 		if($user) {
-			return $this->success(['data' => []]);
+			$folders = Folders::treeFolders($user, $user->id, 'favorite');
+			return $this->success(['folders' => $folders]);
 		}
 		return $this->failed();
 	}
@@ -108,14 +112,30 @@ class ShopFavoritesController extends Controller
 	{
 		$user = $this->myauth_provider->get();
 		if($user) {
-			$product = $request->request->get('product');
+			$code = $request->request->get('product');
+			$product = ShopProducts::where('identify_code', $code)
+				->whereNull('deleted_at')
+				->first();
+			if($product) {
+				$favorite = ShopFavorites::where('user_id', $user->id)
+					->where('product_id', $product->id)
+					->first();
+				if($favorite) {
+					$ret = DB::transaction(function() use ($favorite, $folder_id) {
+						$favorite->fill(['folder_id' => intval($folder_id)])->save();
+						return true;
+					});
+					return $this->success();
+				}
+			}
 		}
+		return $this->failed();
 	}
 
 	public function create_folder(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
-			'name' => ['required']
+			'f_name' => ['required']
 		]);
 		if($validator->fails()) {
 			return $this->failed([
@@ -125,7 +145,7 @@ class ShopFavoritesController extends Controller
 
 		$user = $this->myauth_provider->get();
 		if($user) {
-			$name = $request->request->get('name');
+			$name = $request->request->get('f_name');
 			$parent = $request->request->get('parent', null);
 			$ret = Folders::create($user, $user->id, 'favorite', $name, $parent);
 			if($ret) {

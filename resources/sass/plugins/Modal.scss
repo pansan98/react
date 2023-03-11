@@ -12,10 +12,10 @@
 			height: 100%;
 		}
 
-		.modal-dialog {
+		.modal {
 			position: fixed;
 			top: 10%;
-			left: 40%;
+			display: block;
 		}
 	}
 }
