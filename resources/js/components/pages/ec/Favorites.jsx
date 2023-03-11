@@ -78,7 +78,9 @@ class Favorites extends React.Component {
 
 	async fetch(callback_fn) {
 		await axios.get('/api/shop/favorite/favorites', {
-			folder: this.folder,
+			params: {
+				folder: this.state.folder
+			},
 			credentials: 'same-origin'
 		}).then((res) => {
 			if(res.data.result) {
@@ -98,8 +100,41 @@ class Favorites extends React.Component {
 		})
 	}
 
+	async viewFolder(id) {
+		await this.setState({
+			loading: true,
+			folder: id
+		})
+		this.fetch(() => {
+			this.setState({loading: false})
+		})
+	}
+
+	async backFolder() {
+		await this.setState({loading: true})
+		const res = await Utils.apiHandler('get', '/api/shop/favorite/folder/back', {
+			params: {
+				folder: this.state.folder
+			},
+			credentials: 'same-origin'
+		}).then((res) => {
+			return res.data;
+		}).catch((e) => {
+			return {result: false}
+		})
+
+		if(res.result) {
+			await this.setState({folder: res.parent_id})
+			this.fetch(() => {
+				this.setState({loading: false})
+			})
+		} else {
+			this.setState({loading: false})
+		}
+	}
+
 	async createFolder() {
-		this.setState({
+		await this.setState({
 			loading: true,
 			folder_create: Object.assign(this.config.modals.folder_create, {
 				active: false
@@ -107,6 +142,7 @@ class Favorites extends React.Component {
 		})
 		const res = await axios.post('/api/shop/favorite/folder/create', {
 			f_name: this.state.f_name,
+			parent: this.state.folder,
 			credentials: 'same-origin'
 		}).then((res) => {
 			return res.data
@@ -120,7 +156,7 @@ class Favorites extends React.Component {
 		})
 
 		if(res.reuslt) {
-			this.setState({
+			await this.setState({
 				f_name: '',
 				folder_create: Object.assign(this.config.modals.folder_create, {active: false}),
 				errors: {
@@ -336,16 +372,28 @@ class Favorites extends React.Component {
 						<button className="btn btn-primary ml-auto" onClick={(e) => this.modalCreateFolder(e)}>フォルダ追加</button>
 					</div>
 					<div className="card-body">
+						{this.state.folder ?
+						<button
+						className="btn btn-default"
+						onClick={(e) => this.backFolder()}
+						>
+							戻る
+						</button>
+						: ''}
 						{this.state.folders.length ?
 						this.state.folders.map((folder, k) => {
 							return (
-								<button key={`folder-${k}`} className="btn btn-block btn-primary text-left">
+								<button
+								key={`folder-${k}`}
+								className="btn btn-block btn-primary text-left"
+								onClick={(e) => this.viewFolder(folder.id)}
+								>
 									<i className="fas fa-folder-open"></i>
 									{folder.name}
 								</button>
 							)
 						})
-						: 'お気に入りフォルダがありません。'}
+						: ''}
 					</div>
 				</div>
 				<div className="card card-list">

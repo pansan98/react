@@ -20,6 +20,10 @@ class Utils {
 	}
 
 	async apiHandler(method, endpoint, params, final) {
+		const errorHandler = (e) => {
+			throw new Error(e.message);
+		}
+
 		method = method.toUpperCase()
 		return new Promise((resolve, reject) => {
 			if(method === 'POST') {
@@ -32,6 +36,7 @@ class Utils {
 					resolve(res)
 				}).catch((e) => {
 					reject(e)
+					errorHandler(e)
 				}).finally(() => {
 					if(typeof final === 'function') {
 						final()
@@ -47,6 +52,7 @@ class Utils {
 					resolve(res)
 				}).catch((e) => {
 					reject(e)
+					errorHandler(e)
 				}).finally(() => {
 					if(typeof final === 'function') {
 						final()

@@ -111,4 +111,13 @@ class Folders extends Model
 
 		return $folders;
 	}
+
+	public static function findFolder($folder_id, $class, $id, $apply)
+	{
+		return self::where('id', $folder_id)
+			->where('folderable_type', get_class($class))
+			->where('folderable_id', $id)
+			->where('apply', $apply)
+			->first();
+	}
 }

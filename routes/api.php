@@ -90,7 +90,8 @@ Route::prefix('shop')->as('shop')->group(function() {
 		Route::post('/remove/{identify}', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'remove'])->where(['identify' => '[a-zA-Z0-9\-_]+']);
 		Route::get('/favorites', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'favorites']);
 		Route::get('/folders', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'folders']);
-		Route::post('/folder/create', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'create_folder']);
+		Route::post('/folder/create', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'folder_create']);
+		Route::get('/folder/back', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'folder_back']);
 		Route::post('/folder/{folder_id}', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'folder']);
 	});
 

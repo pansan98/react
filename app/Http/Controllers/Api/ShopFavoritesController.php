@@ -85,7 +85,7 @@ class ShopFavoritesController extends Controller
 				$cart_provider = app(\App\Providers\ShopCartProvider::class);
 				$carts = $cart_provider->product_identifies($cart);
 			}
-			$folders = Folders::findFolders($user, $user->id, 'favorite')->toArray();
+			$folders = Folders::findFolders($user, $user->id, 'favorite', $folder)->toArray();
 
 			return $this->success([
 				'products' => $products,
@@ -132,7 +132,7 @@ class ShopFavoritesController extends Controller
 		return $this->failed();
 	}
 
-	public function create_folder(Request $request)
+	public function folder_create(Request $request)
 	{
 		$validator = Validator::make($request->all(), [
 			'f_name' => ['required']
@@ -153,6 +153,19 @@ class ShopFavoritesController extends Controller
 			}
 		}
 
+		return $this->failed();
+	}
+
+	public function folder_back(Request $request)
+	{
+		$user = $this->myauth_provider->get();
+		if($user) {
+			$id = $request->query->get('folder');
+			$folder = Folders::findFolder($id, $user, $user->id, 'favorite');
+			if($folder) {
+				return $this->success(['parent_id' => $folder->parent_id]);
+			}
+		}
 		return $this->failed();
 	}
 }
