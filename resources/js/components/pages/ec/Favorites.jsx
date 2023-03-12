@@ -133,6 +133,19 @@ class Favorites extends React.Component {
 		}
 	}
 
+	async trashFolder(id) {
+		this.setState({loading: true})
+		await Utils.apiHandler('post', '/api/shop/favorite/folder/destroy/' + id, {
+			credentials: 'same-origin'
+		}, () => {
+			this.fetch(() => {
+				this.setState({loading: false})
+			})
+		}).then(() => {}).catch((e) => {
+			console.log(e)
+		})
+	}
+
 	async createFolder() {
 		await this.setState({
 			loading: true,
@@ -155,7 +168,7 @@ class Favorites extends React.Component {
 			return {result: false}
 		})
 
-		if(res.reuslt) {
+		if(res.result) {
 			await this.setState({
 				f_name: '',
 				folder_create: Object.assign(this.config.modals.folder_create, {active: false}),
@@ -270,9 +283,9 @@ class Favorites extends React.Component {
 				return (
 					<div
 					key={`folder-${k}`}
-					className={(typeof child !== 'undefined') ? 'children mb-1 ml-1' : 'master mb-2'}
+					className={(typeof child !== 'undefined') ? 'children mb-1 ml-4' : 'master mb-2'}
 					>
-						<div>
+						<div className="mb-1">
 							<button
 							className="btn btn-block btn-default text-left"
 							onClick={(e) => this.addFolder(folder.id, product)}
@@ -374,7 +387,7 @@ class Favorites extends React.Component {
 					<div className="card-body">
 						{this.state.folder ?
 						<button
-						className="btn btn-default"
+						className="btn btn-default mb-1"
 						onClick={(e) => this.backFolder()}
 						>
 							戻る
@@ -383,14 +396,26 @@ class Favorites extends React.Component {
 						{this.state.folders.length ?
 						this.state.folders.map((folder, k) => {
 							return (
-								<button
-								key={`folder-${k}`}
-								className="btn btn-block btn-primary text-left"
-								onClick={(e) => this.viewFolder(folder.id)}
-								>
-									<i className="fas fa-folder-open"></i>
-									{folder.name}
-								</button>
+								<div className="d-flex mb-1" key={`folder-${k}`}>
+									<button
+									className="btn btn-default mr-1"
+									>
+										<i className="fas fa-sort"></i>
+									</button>
+									<button
+									className="btn btn-block btn-primary text-left mr-1"
+									onClick={(e) => this.viewFolder(folder.id)}
+									>
+										<i className="fas fa-folder-open"></i>
+										{folder.name}
+									</button>
+									<button
+									className="btn btn-danger ml-auto"
+									onClick={(e) => this.trashFolder(folder.id)}
+									>
+										<i className="fa fa-trash"></i>
+									</button>
+								</div>
 							)
 						})
 						: ''}

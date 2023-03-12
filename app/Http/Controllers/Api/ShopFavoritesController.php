@@ -168,4 +168,16 @@ class ShopFavoritesController extends Controller
 		}
 		return $this->failed();
 	}
+
+	public function folder_destroy(Request $request, $folder_id)
+	{
+		$user = $this->myauth_provider->get();
+		if($user) {
+			$ret = Folders::destroyFolder($folder_id, $user, $user->id, 'favorite');
+			if($ret) {
+				return $this->success();
+			}
+		}
+		return $this->failed();
+	}
 }
