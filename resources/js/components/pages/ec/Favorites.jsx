@@ -291,7 +291,7 @@ class Favorites extends React.Component {
 							className="btn btn-block btn-default text-left"
 							onClick={(e) => this.addFolder(folder.id, product)}
 							>
-								<i className="fas fa-folder-plus"></i>
+								<i className="fas fa-folder-plus mr-1"></i>
 								{folder.name}
 							</button>
 						</div>

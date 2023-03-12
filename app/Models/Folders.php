@@ -112,9 +112,9 @@ class Folders extends Model
 	 * @param [type] $id
 	 * @param [type] $apply
 	 * @param [type] $parent_id
-	 * @return void
+	 * @return array
 	 */
-	public static function treeFolders($class, $id, $apply, $parent_id = null)
+	public static function treeFolders($class, $id, $apply, $parent_id = null, $to_array = true)
 	{
 		$query = self::where('folderable_type', get_class($class))
 			->where('folderable_id', $id)
@@ -125,11 +125,19 @@ class Folders extends Model
 			$query->whereNull('parent_id');
 		}
 
-		$folders = $query->get()->toArray();
+		$folders = $query->get();
+		if($to_array) {
+			$folders = $folders->toArray();
+		}
+
 		foreach ($folders as &$folder) {
-			$children = self::treeFolders($class, $id, $apply, $folder['id']);
+			$children = self::treeFolders($class, $id, $apply, $folder['id'], $to_array);
 			if(!empty($children)) {
-				$folder['children'] = $children;
+				if($to_array) {
+					$folder['children'] = $children;
+				} else {
+					$folder->children = $children;
+				}
 			}
 		}
 
@@ -173,6 +181,32 @@ class Folders extends Model
 			->first();
 
 		if($folder) {
+			$children = self::treeFolders($class, $id, $apply, $folder->id, false);
+			if(!empty($children)) {
+				// 子孫のソートを削除する
+				$closure = function($folder, $callback, $args = []) use ($class, $id, $apply) {
+					$ancestor = self::ancestorFolders($folder, $class, $id, $apply);
+					Multisort::destroySort($folder, $folder->id, self::ancestorToMultisorts($ancestor));
+					list($folders, $closure) = $args;
+					// 再起的に呼び出す
+					return $callback($folders, $closure);
+				};
+				// 再帰処理用クロージャ
+				$recursion = function($folders, $callback) use ($closure) {
+					if(!empty($folders)) {
+						foreach ($folders as $folder) {
+							$children = !empty($folder->children) ? $folder->children : null;
+							return $closure($folder, $callback, [
+								$children, $callback
+							]);
+						}
+					}
+					return;
+				};
+				// 実行
+				$recursion($children, $recursion);
+			}
+			
 			$ancestor = self::ancestorFolders($folder, $class, $id, $apply);
 			Multisort::destroySort($folder, $folder->id, self::ancestorToMultisorts($ancestor));
 			$ret = DB::transaction(function() use ($folder) {
