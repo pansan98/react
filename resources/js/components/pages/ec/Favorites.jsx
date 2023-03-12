@@ -40,6 +40,7 @@ class Favorites extends React.Component {
 			favorites: [],
 			folders: [],
 			folder: null,
+			current_folder: '',
 			loading: false,
 			f_name: '',
 			errors: {
@@ -243,7 +244,7 @@ class Favorites extends React.Component {
 
 	async addFolder(id, product) {
 		this.setState({loading: true})
-		const res = await axios.post('/api/shop/favorite/folder/' + id, {
+		const res = await axios.post('/api/shop/favorite/folder/add/' + id, {
 			product: product,
 			credentials: 'same-origin'
 		}).then((res) => {
@@ -382,6 +383,9 @@ class Favorites extends React.Component {
 				</div>
 				<div className="card">
 					<div className="card-header d-flex">
+						<div className="col-6">
+							{this.state.current_folder}
+						</div>
 						<button className="btn btn-primary ml-auto" onClick={(e) => this.modalCreateFolder(e)}>フォルダ追加</button>
 					</div>
 					<div className="card-body">

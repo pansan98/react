@@ -93,7 +93,7 @@ Route::prefix('shop')->as('shop')->group(function() {
 		Route::prefix('folder')->as('folder')->group(function() {
 			Route::post('/create', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'folder_create']);
 			Route::get('/back', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'folder_back']);
-			Route::post('/{folder_id}', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'folder'])->where(['folder_id' => '\d+']);
+			Route::post('/add/{folder_id}', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'folder_add'])->where(['folder_id' => '\d+']);
 			Route::post('/destroy/{folder_id}', [\App\Http\Controllers\Api\ShopFavoritesController::class, 'folder_destroy'])->where(['folder_id' => '\d+']);
 		});
 	});

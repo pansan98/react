@@ -108,7 +108,7 @@ class ShopFavoritesController extends Controller
 		return $this->failed();
 	}
 
-	public function folder(Request $request, $folder_id)
+	public function folder_add(Request $request, $folder_id)
 	{
 		$user = $this->myauth_provider->get();
 		if($user) {
