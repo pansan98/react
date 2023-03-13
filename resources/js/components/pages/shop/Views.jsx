@@ -3,16 +3,41 @@ import {Link} from 'react-router-dom';
 
 import Base from '../Base';
 import TabContents from '../../plugins/TabContents';
+import Modal from '../../plugins/Modal';
 
 class Views extends React.Component {
 	constructor(props) {
 		super(props);
 
+		// デフォルトオプション
+		this.config = {
+			modals: {
+				review: {
+					active: false,
+					title: '口コミ投稿',
+					classes: ['modal-lg'],
+					success: false,
+					closefn: () => {},
+					callbackfn: () => {}
+				}
+			}
+		}
+
 		this.state = {
 			product: {},
 			history: [],
 			review: {},
-			loaded: []
+			loaded: [],
+			loading: false,
+			modal_review: {
+				active: this.config.modals.review.active,
+				title: this.config.modals.review.title,
+				classes: this.config.modals.review.classes,
+				success: this.config.modals.review.success,
+				closefn: () => this.config.modals.review.closefn,
+				callbackfn: () => this.config.modals.review.callbackfn,
+				comment: ''
+			}
 		}
 		this.keys = {0: 'history', 1: 'review'}
 	}
@@ -46,6 +71,46 @@ class Views extends React.Component {
 		if(typeof this.keys[type] !== 'undefined') {
 			this.fetch(this.keys[type])
 		}
+	}
+
+	async modalReviewComment(id) {
+		this.setState({loading: true})
+		const res = await Utils.apiHandler('get', '/api/shop/views/' + this.state.product.identify_code + '/review/comment/' + id, {
+			credentials: 'same-origin'
+		}, () => {
+			this.setState({loading: false})
+		}).then((res) => {
+			return res.data
+		}).catch((e) => {
+			console.log(e)
+		})
+
+		if(res.result) {
+			this.setState({
+				modal_review: Object.assign(this.config.modals.review, {
+					active: true,
+					comment: res.comment,
+					closefn: () => this.closeModalReviewComment()
+				})
+			})
+		}
+	}
+
+	closeModalReviewComment() {
+		this.setState({
+			modal_review: Object.assign(this.config.modals.review, {
+				active: false,
+				comment: ''
+			})
+		})
+	}
+
+	modalReviewCommentContent(comment) {
+		return (
+			<div className="text-left">
+				{comment}
+			</div>
+		)
 	}
 
 	tabs() {
@@ -86,7 +151,12 @@ class Views extends React.Component {
 										<div key={`review-${k}`} className="col-12">
 											<p>口コミ投稿者：{review.user.name}{(!review.viewed) ? <i className="text-right fab fa-readme"></i> : ''}</p>
 											<p className="fs-l">評価：{review.star}</p>
-											<button className="btn btn-default">口コミを読む</button>
+											<button
+											className="btn btn-default"
+											onClick={(e) => this.modalReviewComment(review.id)}
+											>
+												口コミを読む
+											</button>
 										</div>
 									)
 								})}
@@ -96,6 +166,17 @@ class Views extends React.Component {
 					:
 					<div>口コミが投稿されていません。</div>}
 				</div>
+
+				<Modal
+				title={this.state.modal_review.title}
+				active={this.state.modal_review.active}
+				classes={this.state.modal_review.classes}
+				success={this.state.modal_review.success}
+				closefn={this.state.modal_review.closefn}
+				callbackfn={this.state.modal_review.callbackfn}
+				>
+					{this.modalReviewCommentContent(this.state.modal_review.comment)}
+				</Modal>
 			</div>
 		]
 	}
@@ -123,7 +204,7 @@ class Views extends React.Component {
 	}
 
 	render() {
-		return (<Base title="商品関連情報" content={this.contents()}/>)
+		return (<Base title="商品関連情報" content={this.contents()} loading={this.state.loading}/>)
 	}
 }
 

@@ -51,4 +51,21 @@ class ShopViewsProvider extends ServiceProvider
 		}
 		return $reviews;
 	}
+
+	/**
+	 *
+	 * @param \App\Models\ShopProducts $product
+	 * @param [type] $id
+	 * @return ShopReviews|mixed
+	 */
+	public function viewReview(\App\Models\ShopProducts $product, $id)
+	{
+		$review = ShopReviews::where('product_id', $product->id)
+			->where('id', $id)
+			->first();
+		if($review) {
+			ShopReviews::viewed($review);
+		}
+		return $review;
+	}
 }

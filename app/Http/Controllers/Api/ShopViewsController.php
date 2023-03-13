@@ -36,13 +36,33 @@ class ShopViewsController extends Controller
 				->where('deleted_at', null)
 				->first();
 			if($product) {
-				/** \App\Providers\ShopViewsProvider $provider */
+				/** @var \App\Providers\ShopViewsProvider $provider */
 				$provider = app(\App\Providers\ShopViewsProvider::class);
 				$reviews = $provider->review($product);
 				return $this->success(['views' => $reviews]);
 			}
 		}
 
+		return $this->failed();
+	}
+
+	public function comment(Request $request, $identify, $id)
+	{
+		$user = $this->myauth_provider->get();
+		if($user) {
+			$product = ShopProducts::where('user_id', $user->id)
+				->where('identify_code', $identify)
+				->where('deleted_at', null)
+				->first();
+			if($product) {
+				/** @var \App\Providers\ShopViewsProvider $provider */
+				$provider = app(\App\Providers\ShopViewsProvider::class);
+				$review = $provider->viewReview($product, $id);
+				if($review) {
+					return $this->success(['comment' => $review->comment]);
+				}
+			}
+		}
 		return $this->failed();
 	}
 }

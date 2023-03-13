@@ -207,6 +207,7 @@ class Folders extends Model
 				$recursion($children, $recursion);
 			}
 			
+			// 対象のフォルダとMultisortを削除
 			$ancestor = self::ancestorFolders($folder, $class, $id, $apply);
 			Multisort::destroySort($folder, $folder->id, self::ancestorToMultisorts($ancestor), true);
 			$ret = DB::transaction(function() use ($folder) {

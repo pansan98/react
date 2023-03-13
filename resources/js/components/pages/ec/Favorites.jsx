@@ -18,7 +18,7 @@ class Favorites extends React.Component {
 				folder_create: {
 					active: false,
 					title: 'お気に入りフォルダ追加',
-					classes: ['modal-xl'],
+					classes: ['modal-lg'],
 					success: true,
 					closefn: () => {},
 					callbackfn: () => {}

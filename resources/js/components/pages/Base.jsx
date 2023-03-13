@@ -2,6 +2,7 @@ import React from 'react';
 
 import GlobalNav from '../common/GlobalNav';
 import PageLoader from '../common/PageLoader';
+import Loader from '../common/Loader';
 import SideMenu from '../common/SideMenu';
 
 class Base extends React.Component {
@@ -13,6 +14,7 @@ class Base extends React.Component {
 		return (
 			<div className="wrapper">
 				<PageLoader />
+				<Loader is_loading={this.props.loading}/>
 				<GlobalNav />
 				<SideMenu user={this.props.user}/>
 				<div className="content-wrapper">
@@ -34,6 +36,12 @@ class Base extends React.Component {
 			</div>
 		)
 	}
+}
+
+Base.defaultProps = {
+	title: '',
+	content: '',
+	loading: false
 }
 
 export default Base;
