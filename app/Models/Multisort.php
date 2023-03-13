@@ -5,10 +5,13 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 use Illuminate\Support\Facades\DB;
+use Illuminate\Support\Facades\Log;
 
 class Multisort extends Model
 {
 	use HasFactory;
+
+	const KEYS = ['key1', 'key2', 'key3', 'key4', 'key5'];
 
 	protected $table = 'multisort';
 	protected $primaryKey = 'id';
@@ -20,14 +23,27 @@ class Multisort extends Model
 	 * @param [type] $id
 	 * @return bool
 	 */
-	public static function destroySort($class, $class_id, $args = [])
+	public static function destroySort($class, $class_id, $args = [], $reorder = false)
 	{
 		$ret = false;
 		$query = self::where('applyable_type', get_class($class))
 			->where('applyable_id', $class_id);
-		foreach($args as $column => $arg) {
-			$query->where('key' . ($column + 1), '=', $arg);
+		if(!empty($args)) {
+			foreach($args as $column => $arg) {
+				$query->where('key' . ($column + 1), '=', $arg);
+			}
+			if(count($args) < count(self::KEYS)) {
+				$tasks = array_slice(self::KEYS, count($args));
+				foreach ($tasks as $task) {
+					$query->whereNull($task);
+				}
+			}
+		} else {
+			foreach (self::KEYS as $column) {
+				$query->whereNull($column);
+			}
 		}
+
 		$multisort = $query->first();
 		if($multisort) {
 			$ret = DB::transaction(function() use ($multisort) {
@@ -35,6 +51,68 @@ class Multisort extends Model
 				return true;
 			});
 		}
+		if($reorder) {
+			$ret = self::reSort($class, $args);
+		}
+		return $ret;
+	}
+
+	/**
+	 * 並び順の更新
+	 *
+	 * @param [type] $class
+	 * @param [type] $args
+	 * @param array $orders
+	 * @return bool
+	 */
+	public static function reSort($class, $args, $orders = [])
+	{
+		$ret = false;
+		$query = self::where('applyable_type', get_class($class))
+			->orderBy('order_no', 'ASC');
+		if(!empty($orders)) {
+			$ret = DB::transaction(function() use ($query, $orders) {
+				$sort = 1;
+				foreach ($orders as $order) {
+					$order_query = $query;
+					$multisort = $order_query->where('applyable_id', $order)->first();
+					if($multisort) {
+						$multisort->order_no = $sort;
+						$multisort->save();
+						$sort++;
+					}
+				}
+				return true;
+			});
+		} else {
+			if(!empty($args)) {
+				foreach ($args as $column => $arg) {
+					$query->where('key' . ($column + 1), '=', $arg);
+				}
+				if(count($args) < count(self::KEYS)) {
+					$tasks = array_slice(self::KEYS, count($args));
+					foreach ($tasks as $task) {
+						$query->whereNull($task);
+					}
+				}
+			} else {
+				foreach (self::KEYS as $column) {
+					$query->whereNull($column);
+				}
+			}
+			$multisorts = $query->get();
+			if($multisorts) {
+				$ret = DB::transaction(function() use ($multisorts) {
+					$sort = 1;
+					foreach($multisorts as $multisort) {
+						$multisort->order_no = $sort;
+						$multisort->save();
+						$sort++;
+					}
+				});
+			}
+		}
+
 		return $ret;
 	}
 
@@ -47,11 +125,11 @@ class Multisort extends Model
 
 		switch($pos) {
 			case 'first':
-				$sort = self::first($class, $id, $keys);
+				$sort = self::first($class, $keys);
 				break;
 			case 'last':
 			default:
-				$sort = self::last($class, $id, $keys);
+				$sort = self::last($class, $keys);
 				break;
 		}
 
@@ -75,7 +153,7 @@ class Multisort extends Model
 	 * @param [type] $keys
 	 * @return void
 	 */
-	protected static function last($class, $id, $keys)
+	protected static function last($class, $keys)
 	{
 		$query = self::select(DB::raw('MAX(multisort.order_no) AS max_order'))
 			->where('applyable_type', get_class($class));
@@ -98,7 +176,7 @@ class Multisort extends Model
 	 * @param [type] $keys
 	 * @return void
 	 */
-	protected static function first($class, $id, $keys)
+	protected static function first($class, $keys)
 	{
 		$query = self::where('applyable_type', get_class($class));
 		foreach($keys as $column => $key) {

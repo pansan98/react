@@ -196,7 +196,7 @@ class Folders extends Model
 					if(!empty($folders)) {
 						foreach ($folders as $folder) {
 							$children = !empty($folder->children) ? $folder->children : null;
-							return $closure($folder, $callback, [
+							$closure($folder, $callback, [
 								$children, $callback
 							]);
 						}
@@ -208,7 +208,7 @@ class Folders extends Model
 			}
 			
 			$ancestor = self::ancestorFolders($folder, $class, $id, $apply);
-			Multisort::destroySort($folder, $folder->id, self::ancestorToMultisorts($ancestor));
+			Multisort::destroySort($folder, $folder->id, self::ancestorToMultisorts($ancestor), true);
 			$ret = DB::transaction(function() use ($folder) {
 				$folder->delete();
 				return true;
