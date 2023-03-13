@@ -107,3 +107,6 @@ Route::prefix('shop')->as('shop')->group(function() {
 		]);
 	});
 });
+
+Route::prefix('event')->as('event')->group(function() {
+});

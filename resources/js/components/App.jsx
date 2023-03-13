@@ -18,6 +18,8 @@ import EcFavorites from './pages/ec/Favorites';
 import EcHistory from './pages/ec/History';
 import EcReview from './pages/ec/ParamsReview';
 
+import Event from './pages/Event';
+
 // Auth
 import Login from './auth/Login';
 import Register from './auth/Register';
@@ -47,6 +49,7 @@ class App extends React.Component {
 						<Route path="/ec/favorites" element={<EcFavorites />} />
 						<Route path="/ec/history" element={<EcHistory />} />
 						<Route path="/ec/review/:code" element={<EcReview />} />
+						<Route path="/event" element={<Event />} />
 						<Route path="/my/profile" element={<MyProfile />} />
 						<Route path="/practice/stop-watch" element={<StopWatch />} />
 						<Route path="/auth/login" element={<Login />} />

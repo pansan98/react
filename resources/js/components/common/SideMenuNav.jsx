@@ -34,6 +34,12 @@ class SideMenuNav extends React.Component {
 							<p>EC</p>
 						</Link>
 					</li>
+					<li className="nav-item">
+						<Link to="/event" className="nav-link">
+							<i className="nav-icon fas fa-calendar-week"></i>
+							<p>Event Dashboard</p>
+						</Link>
+					</li>
 				</ul>
 			</nav>
 		)
