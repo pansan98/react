@@ -5,10 +5,10 @@ namespace App\Models;
 use Illuminate\Database\Eloquent\Factories\HasFactory;
 use Illuminate\Database\Eloquent\Model;
 
-class EventsSchedules extends Model
+class EventsTicketsBooking extends Model
 {
 	use HasFactory;
 
-	protected $table = 'events_schedules';
-	protected $fillable = ['event_id', 'schedule'];
+	protected $table = 'events_tickets_booking';
+	protected $fillable = ['event_ticket_id', 'user_id'];
 }

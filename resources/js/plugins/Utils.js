@@ -21,9 +21,17 @@ class Utils {
 
 	async apiHandler(method, endpoint, params, final) {
 		method = method.toUpperCase()
+		const d_params = {credentials: 'same-origin'}
+		let p = {}
+		if(typeof params === 'object') {
+			p = Object.assign(d_params, params)
+		} else {
+			p = d_params
+		}
+		
 		return new Promise((resolve, reject) => {
 			if(method === 'POST') {
-				axios.post(endpoint, params).then((res) => {
+				axios.post(endpoint, p).then((res) => {
 					if(typeof res.data.login !== 'undefined') {
 						if(!res.data.login) {
 							reject({error: 'regenerate login'})
@@ -39,7 +47,7 @@ class Utils {
 					}
 				})
 			} else {
-				axios.get(endpoint, params).then((res) => {
+				axios.get(endpoint, p).then((res) => {
 					if(typeof res.data.login !== 'undefined') {
 						if(!res.data.login) {
 							reject({error: 'regenerate login'})

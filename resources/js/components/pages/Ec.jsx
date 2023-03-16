@@ -153,7 +153,6 @@ class Ec extends React.Component {
 					</div>
 				</div>
 				<div className="card card-list">
-					<Loader is_loading={this.state.loading} />
 					<div className="card-body pb-0">
 						<div className="row">
 							{this.state.products.map((product, k) => {
@@ -240,7 +239,7 @@ class Ec extends React.Component {
 	}
 
 	render() {
-		return (<Base title="Enjoy your Shopping." content={this.contents()}/>)
+		return (<Base title="Enjoy your Shopping." content={this.contents()} loading={this.state.loading}/>)
 	}
 }
 

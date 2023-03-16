@@ -19,6 +19,7 @@ import EcHistory from './pages/ec/History';
 import EcReview from './pages/ec/ParamsReview';
 
 import Event from './pages/Event';
+import EventEdit from './pages/event/Edit';
 
 // Auth
 import Login from './auth/Login';
@@ -50,6 +51,7 @@ class App extends React.Component {
 						<Route path="/ec/history" element={<EcHistory />} />
 						<Route path="/ec/review/:code" element={<EcReview />} />
 						<Route path="/event" element={<Event />} />
+						<Route path="/event/create" element={<EventEdit />} />
 						<Route path="/my/profile" element={<MyProfile />} />
 						<Route path="/practice/stop-watch" element={<StopWatch />} />
 						<Route path="/auth/login" element={<Login />} />
