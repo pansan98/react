@@ -10,5 +10,5 @@ class EventsCategories extends Model
 	use HasFactory;
 
 	protected $table = 'events_categories';
-	protected $fillable = ['user_id', 'name'];
+	protected $fillable = ['user_id', 'name', 'multisort'];
 }
