@@ -20,6 +20,7 @@ import EcReview from './pages/ec/ParamsReview';
 
 import Event from './pages/Event';
 import EventEdit from './pages/event/Edit';
+import EventCategory from './pages/event/Category';
 
 // Auth
 import Login from './auth/Login';
@@ -52,6 +53,7 @@ class App extends React.Component {
 						<Route path="/ec/review/:code" element={<EcReview />} />
 						<Route path="/event" element={<Event />} />
 						<Route path="/event/create" element={<EventEdit />} />
+						<Route path="/event/category" element={<EventCategory />} />
 						<Route path="/my/profile" element={<MyProfile />} />
 						<Route path="/practice/stop-watch" element={<StopWatch />} />
 						<Route path="/auth/login" element={<Login />} />

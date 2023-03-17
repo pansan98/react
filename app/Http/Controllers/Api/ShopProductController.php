@@ -54,9 +54,9 @@ class ShopProductController extends Controller
 
 	public function create(ShopProductRequest $request)
 	{
-		$params = $request->request->all();
 		$user = $this->myauth_provider->get();
 		if(!empty($user)) {
+			$params = $request->request->all();
 			$ret = DB::transaction(function() use ($params, $user) {
 				$params['user_id'] = $user->id;
 				$product = new ShopProducts();
@@ -73,7 +73,7 @@ class ShopProductController extends Controller
 				}
 				$product->fill($params)->save();
 				return true;
-			}); 
+			});
 			if($ret) {
 				return $this->success();
 			}

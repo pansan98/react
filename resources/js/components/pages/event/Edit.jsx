@@ -35,6 +35,28 @@ class Edit extends React.Component {
 		this.setState(param);
 	}
 
+	async save(e) {
+		this.setState({loading: true})
+		const res = await Utils.apiHandler('post', '/api/event/create', {
+			name: this.state.name,
+			comment: this.state.comment,
+			thumbnails: this.state.thumbnails,
+			active_flag: this.state.active_flag
+		}, () => {
+			this.setState({loading: false})
+		}).then((res) => {
+			return res.data
+		}).catch((e) => {
+			if(e.response.status === 400) {
+				this.setState({errors: e.response.data.errors});
+			}
+		})
+
+		if(res.result) {
+			this.setState({saved: true})
+		}
+	}
+
 	contents() {
 		if(!this.state.saved) {
 			return (
@@ -44,7 +66,7 @@ class Edit extends React.Component {
 							<div className="card-body">
 								<div className="d-flex">
 									<Link to="/event" className="btn btn-default">戻る</Link>
-									<button className="btn btn-primary ml-auto">保存</button>
+									<button className="btn btn-primary ml-auto" onClick={(e) => this.save(e)}>保存</button>
 								</div>
 							</div>
 						</div>
@@ -67,7 +89,7 @@ class Edit extends React.Component {
 								<Uploader
 									label="画像"
 									formName="thumbnails"
-									value={this.state.thumbnails}
+									values={this.state.thumbnails}
 									message="画像をアップロード"
 									maxFile={5}
 									multiple={true}

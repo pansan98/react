@@ -110,4 +110,5 @@ Route::prefix('shop')->as('shop')->group(function() {
 
 Route::prefix('event')->as('event')->group(function() {
 	Route::get('/', [\App\Http\Controllers\Api\EventsController::class, 'index']);
+	Route::post('/create', [\App\Http\Controllers\Api\EventsController::class, 'create']);
 });

@@ -18,7 +18,9 @@ class Event extends React.Component {
 	}
 
 	async fetch() {
-		const res = await Utils.apiHandler('get', '/api/event/').then((res) => {
+		const res = await axios.get('/api/event/', {
+			credentials: 'same-origin'
+		}).then((res) => {
 			return res.data
 		}).catch((e) => {
 			return {result: false}
@@ -37,7 +39,8 @@ class Event extends React.Component {
 				<div className="card">
 					<div className="card-body">
 						<div className="search-form d-flex">
-							<Link to="/event/create" className="btn btn-primary ml-auto">追加</Link>
+							<Link to="/event/category" className="btn btn-success ml-auto">カテゴリ</Link>
+							<Link to="/event/create" className="btn btn-primary ml-1">追加</Link>
 						</div>
 					</div>
 				</div>
@@ -57,21 +60,23 @@ class Event extends React.Component {
 							</thead>
 							<tbody>
 								{this.state.events.map((event, k) => {
-									<tr key={`event-${k}`}>
-										<td>{event.name}</td>
-										<td>{event.schedules.length}</td>
-										<td>
-											<Link to={`/event/schedules/${event.id}`} className="btn btn-default">確認</Link>
-										</td>
-										<td>
-											<Link to={`/event/${event.id}/edit`} className="btn btn-primary">編集</Link>
-											<button
-												className="btn btn-danger"
-											>
-												<i className="fa fa-trash"></i>
-											</button>
-										</td>
-									</tr>
+									return (
+										<tr key={`event-${k}`}>
+											<td>{event.name}</td>
+											<td>{event.schedules.length}</td>
+											<td>
+												<Link to={`/event/schedules/${event.id}`} className="btn btn-default">確認</Link>
+											</td>
+											<td className="text-center">
+												<Link to={`/event/${event.id}/edit`} className="btn btn-primary">編集</Link>
+												<button
+													className="btn btn-danger ml-1"
+												>
+													<i className="fa fa-trash"></i>
+												</button>
+											</td>
+										</tr>
+									)
 								})}
 							</tbody>
 						</table>
